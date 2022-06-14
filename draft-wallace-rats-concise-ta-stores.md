@@ -12,7 +12,6 @@ category: std
 
 venue:
   mail: "rats@ietf.org"
-  github:
 
 author:
 - ins: C. Wallace
