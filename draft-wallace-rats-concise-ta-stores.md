@@ -5,13 +5,13 @@ title: Concise TA Stores (CoTS)
 abbrev: CoTS
 docname: draft-wallace-rats-concise-ta-stores-latest
 stand_alone: true
-area: Security
-workgroup: RATS Working Group
+area: "Security"
+workgroup: "Remote ATtestation ProcedureS"
 keyword: Internet-Draft
 category: std
 
 venue:
-  mail: rats@ietf.org
+  mail: "rats@ietf.org"
   github:
 
 author:
