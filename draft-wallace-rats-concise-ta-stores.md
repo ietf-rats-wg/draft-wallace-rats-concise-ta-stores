@@ -121,6 +121,7 @@ Each TA store instance identifies a target environment and features one or more 
 ~~~~~~
 concise-ta-store-map
   language
+  store-identity
   target environment
   abstract coarse-grained constraints on TA store usage
   concrete fine-grained constraints on TA store usage
@@ -150,6 +151,7 @@ A concise-ta-store-map is a trust anchor store where the applicability of the st
 ~~~~~~
 concise-ta-store-map = {
  ? tastore.language => language-type
+ ? tastore.store-identity => tag-identity-map
  tastore.environments => environment-group-list
  ? tastore.purposes => [+ $$tas-list-purpose]
  ? tastore.perm_claims => [+ $$claims-set-claims]
@@ -159,11 +161,12 @@ concise-ta-store-map = {
 
 ; concise-ta-store-map indices
 tastore.language = 0
-tastore.environment = 1
-tastore.purpose = 2
-tastore.perm_claims = 3
-tastore.excl_claims = 4
-tastore.keys = 5
+tastore.store-identity = 1
+tastore.environment = 2
+tastore.purpose = 3
+tastore.perm_claims = 4
+tastore.excl_claims = 5
+tastore.keys = 6
 ~~~~~~
 
 The following describes each member of the concise-ta-store-map.
@@ -171,6 +174,10 @@ The following describes each member of the concise-ta-store-map.
 tastore.language:
 
 : A textual language tag that conforms with the IANA Language Subtag Registry {{-language-subtag}}.
+
+tastore.store-identity:
+
+: A composite identifier containing identifying attributes that enable global unique identification of a TA store instance across versions and facilitate linking from other artifacts. The tag-identity-map type is defined in {{I-D.draft-birkholz-rats-corim}}.
 
 tastore.environment:
 
@@ -339,8 +346,9 @@ $concise-tag-type-choice /= #6.TBD(bytes .cbor concise-ta-stores)
 
 concise-ta-store-map = {
  ? tastore.language => language-type
+ ? tastore.store-identity => tag-identity-map
  tastore.environments => environment-group-list
- ? tastore.purposes => [+ $tas-list-purpose]
+ ? tastore.purposes => [+ $$tas-list-purpose]
  ? tastore.perm_claims => [+ $$claims-set-claims]
  ? tastore.excl_claims => [+ $$claims-set-claims]
  tastore.keys => cas-and-tas-map
@@ -348,11 +356,12 @@ concise-ta-store-map = {
 
 ; concise-ta-store-map indices
 tastore.language = 0
-tastore.environment = 1
-tastore.purpose = 2
-tastore.perm_claims = 3
-tastore.excl_claims = 4
-tastore.keys = 5
+tastore.store-identity = 1
+tastore.environment = 2
+tastore.purpose = 3
+tastore.perm_claims = 4
+tastore.excl_claims = 5
+tastore.keys = 6
 
 trust-anchor = [
   format => $pkix-ta-type
