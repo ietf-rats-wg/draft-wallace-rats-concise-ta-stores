@@ -451,7 +451,7 @@ The TA store below contains a TA from a single organization ("Zesty Hands, Inc,"
     "tas": [
       {
         "format": 2,
-        "data": 
+        "data":
 "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAErYoMAdqe2gJT3CvCcifZxyE9+
 N8T6Jy5zbeo5LYtnOipmi1wXA9/gNtlwAbRCRQitH/GEcvUaGlzPZxIOITV/g=="
       }
@@ -490,7 +490,7 @@ nzF+koEZbgvppvvt9QIgVoE+bhEN0j6wSPzePjLrEdD+PEgyjHJ5rbA11SPq/1M="
       },
       {
         "format": 1,
-        "data": 
+        "data":
         "
 ooICtjCCArIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASXz21w12owQAx58euratY
 WiHEkhxDU9MEgetrvAtGYZxNnkfLCsp9vLcw8ISXC8tL97k9ZCUtnr0MzLw37XKRABB
@@ -509,7 +509,7 @@ Gv1A8xks80eYAiEAmCez4KGrolFKOZT6bvqf1sYQuJBfvtk/y1JQdUvoqlg="
       },
       {
         "format": 1,
-        "data": 
+        "data":
         "
 ooIC1TCCAtEwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAATN0f5kzywEzZOYbaV23O3
 N8cku39JoLNjlHPwECbXDDWp0LpAO1z248/hoy6UW/TZMTPPR/93XwHsG16mSFy8XBB
@@ -557,7 +557,7 @@ The TA Store below features one TA with an environment targeting CoSWIDs with en
     "tas": [
       {
         "format": 0,
-        "data": 
+        "data":
         "
 MIIB5TCCAYugAwIBAgIUC9xKoFF5UD5Y8nXVUkZzR7yvtTMwCgYIKoZIzj0EAwI
 wUjELMAkGA1UEBgwCVVMxGjAYBgNVBAoMEVplc3R5IEhhbmRzLCBJbmMuMScwJQ
