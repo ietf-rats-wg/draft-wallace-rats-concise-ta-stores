@@ -307,7 +307,7 @@ named-ta-store = tstr
 
 ### The $$tas-list-purpose Type
 
-The $$tas-list-purpose type provides an extensible means of expressions actions for which the corresponding keys are applicable. For example, trust anchors in a concise-ta-store-map with purpose field set to eat may not be used to verification certification paths. Extended key usage values corresponding to each purpose listed below (except for certificate) are defined in a companion specification.
+The $$tas-list-purpose type provides an extensible means of expressions actions for which the corresponding keys are applicable. For example, trust anchors in a concise-ta-store-map with purpose field set to eat may not be used to verify certification paths. Extended key usage values corresponding to each purpose listed below (except for certificate) are defined in a companion specification.
 
 ~~~~~~
 $$tas-list-purpose /= "cots"
@@ -460,7 +460,7 @@ N8T6Jy5zbeo5LYtnOipmi1wXA9/gNtlwAbRCRQitH/GEcvUaGlzPZxIOITV/g=="
 }
 ~~~~~~
 
-The TA store below features three TAs from different organizations grouped as a TA store with the name "Miscellaneous TA Store". The first TA is an X.509 certificate. The second and third TAs are TrustAnchorInfo objects containing X.509 certificates. Though not shown in this example, constraints could added to the TrustAnchorInfo elements, i.e., to restrict verification to attestations asserting a specific vendor name. It features a tag identity field containing a string as the tag identity with no version field present.
+The TA store below features three TAs from different organizations grouped as a TA store with the name "Miscellaneous TA Store". The first TA is an X.509 certificate. The second and third TAs are TrustAnchorInfo objects containing X.509 certificates. Though not shown in this example, constraints could be added to the TrustAnchorInfo elements, i.e., to restrict verification to attestations asserting a specific vendor name. It features a tag identity field containing a string as the tag identity with no version field present.
 
 ~~~~~~
 {
