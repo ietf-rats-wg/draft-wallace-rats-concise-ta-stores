@@ -30,6 +30,14 @@ author:
   city: Herndon
   region: VA
   country: USA
+- ins: T. Fossati
+  name: Thomas Fossati
+  organization: arm
+  email: Thomas.Fossati@arm.com
+- ins: Y. Deshpande
+  name: Yogesh Deshpande
+  organization: arm
+  email: yogesh.deshpande@arm.com
 
 normative:
   I-D.draft-birkholz-rats-corim:
