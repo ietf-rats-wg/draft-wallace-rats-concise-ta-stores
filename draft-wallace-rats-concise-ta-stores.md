@@ -3,7 +3,7 @@ v: 3
 
 title: Concise TA Stores (CoTS)
 abbrev: CoTS
-docname: draft-wallace-rats-concise-ta-stores-latest
+docname: draft-ietf-rats-concise-ta-stores-latest
 stand_alone: true
 area: "Security"
 workgroup: "Remote ATtestation ProcedureS"
