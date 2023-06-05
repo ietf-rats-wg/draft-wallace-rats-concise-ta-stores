@@ -17,19 +17,11 @@ author:
 - ins: C. Wallace
   name: Carl Wallace
   org: Red Hound Software
-  abbrev: Red Hound
   email: carl@redhoundsoftware.com
-  country: USA
 - ins: R. Housley
   name: Russ Housley
   org: Vigil Security, LLC
-  abbrev: Vigil Security
   email: housley@vigilsec.com
-  street: 516 Dranesville Road
-  code: "20170"
-  city: Herndon
-  region: VA
-  country: USA
 - ins: T. Fossati
   name: Thomas Fossati
   organization: arm
@@ -49,7 +41,7 @@ normative:
   IANA.language-subtag-registry: language-subtag
 
 informative:
-  I-D.draft-ietf-rats-architecture:
+  RFC9334:
   RFC6024: TA requirements
   RFC5934: TAMP
   RFC3779:
@@ -80,9 +72,9 @@ Trust anchor (TA) stores may be used for several purposes in the Remote Attestat
 
 # Introduction
 
-The RATS architecture [I-D.draft-ietf-rats-architecture] uses the definition of a trust anchor from [RFC6024]: "A trust anchor represents an authoritative entity via a public key and associated data.  The public key is used to verify digital signatures, and the associated data is used to constrain the types of information for which the trust anchor is authoritative." In the context of RATS, a trust anchor may be a public key or a symmetric key. This document focuses on trust anchors that are represented as public keys.
+The RATS architecture {{RFC9334}} uses the definition of a trust anchor from {{RFC6024}}: "A trust anchor represents an authoritative entity via a public key and associated data.  The public key is used to verify digital signatures, and the associated data is used to constrain the types of information for which the trust anchor is authoritative." In the context of RATS, a trust anchor may be a public key or a symmetric key. This document focuses on trust anchors that are represented as public keys.
 
-The Concise Reference Integrity Manifest (CoRIM) [I-D.draft-birkholz-rats-corim] specification defines a binary encoding for reference values using the Concise Binary Object Representation (CBOR) [RFC8949]. Amongst other information, a CoRIM may include key material for use in verifying evidence from an attesting environment (see section 3.11 in {{I-D.draft-birkholz-rats-corim}}). The extension in this document aims to enable public key material to be decoupled from reference data for several reasons, described below.
+The Concise Reference Integrity Manifest (CoRIM) {{I-D.draft-birkholz-rats-corim}} specification defines a binary encoding for reference values using the Concise Binary Object Representation (CBOR) {{RFC8949}}. Amongst other information, a CoRIM may include key material for use in verifying evidence from an attesting environment (see section 3.11 in {{I-D.draft-birkholz-rats-corim}}). The extension in this document aims to enable public key material to be decoupled from reference data for several reasons, described below.
 
 Trust anchor (TA) and certification authority (CA) public keys may be less dynamic than the reference data that comprises much of a reference integrity manifest (RIM). For example, TA and CA lifetimes are typically fairly long while software versions change frequently. Conveying keys less frequently and indepedent from reference data enables a reduction in size of RIMs used to convey dynamic information and may result in a reduction in the size of aggregated data transferred to a verifier.  CoRIMs themselves are signed and some means of conveying CoRIM verification keys is required, though ultimately some out-of-band mechanism is required at least for bootstrapping purposes. Relying parties may verify attestations from both hardware and software sources and some trust anchors may be used to verify attestations from both hardware and software sources, as well. The verification information included in a CoRIM optionally includes a trust anchor, leaving trust anchor management to other mechanisms. Additionally, the CoRIM verification-map structure is tied to CoMIDs, leaving no simple means to convey verification information for CoSWIDs {{I-D.draft-ietf-sacm-coswid}}.
 
@@ -109,7 +101,7 @@ Subsequent specifications may define extensions to express constraints as well a
 
 Within RATS, trust anchors may be used to verify digital signatures for a variety of objects, including entity attestation tokens (EATs), CoRIMs, X.509 CA certificates (possibly containing endorsement information), X.509 EE certificates (possibly containing endorsement or attestation information), other attestation data, digital letters of approval {{dloa}}, revocation information, etc. Depending on context, a raw public key may suffice or additional information may be required, such as subject name or subject public key identifier information found in an X.509 certificate. Trust anchors are usually aggregated into sets that are referred to as "trust anchor stores". Different trust anchor stores may serve different functional purposes.
 
-Historically, trust anchors and trust anchor stores are not constrained other than by the context(s) in which a trust anchor store is used. The path validation algorithm in [RFC5280] only lists name, public key, public key algorithm and public key parameters as the elements of "trust anchor information". However, there are environments that do constrain trust anchor usage. The RPKI uses extensions from trust anchor certificates as defined in [RFC3779]. FIDO provides a type of constraint by grouping attestation verification root certificates by authenticator model in [fido-metadata].
+Historically, trust anchors and trust anchor stores are not constrained other than by the context(s) in which a trust anchor store is used. The path validation algorithm in {{RFC5280}} only lists name, public key, public key algorithm and public key parameters as the elements of "trust anchor information". However, there are environments that do constrain trust anchor usage. The RPKI uses extensions from trust anchor certificates as defined in {{RFC3779}}. FIDO provides a type of constraint by grouping attestation verification root certificates by authenticator model in [fido-metadata].
 
 This document aims to support each of these types of models by allowing constrained or unconstrained trust anchors to be grouped by abstract purpose, i.e., similar to traditional trust anchor stores, or grouped by a set of constraints, such as vendor name.
 
@@ -146,7 +138,7 @@ The concise-ta-stores type is the root element for distrbuting sets of trust anc
 concise-ta-stores = [+ concise-ta-store]
 ~~~~~~
 
-The $concise-tag-type-choice [I-D.draft-birkholz-rats-corim] is extended to include the concise-ta-stores structure. As shown in Section 4 of [I-D.draft-birkholz-rats-corim], the $concise-tag-type-choice type is used within the unsigned-corim-map structure, which is used within COSE-Sign1-corim structure. The COSE-Sign1-corim provides for integrity of the CoTS data. CoTS structures are not intended for use as stand-alone, unsigned structures. The signature on a CoTS instance SHOULD be verified using a TA associated with the cots [purpose](#the-tas-list-purpose-type).
+The $concise-tag-type-choice {{I-D.draft-birkholz-rats-corim}} is extended to include the concise-ta-stores structure. As shown in Section 4 of {{I-D.draft-birkholz-rats-corim}}, the $concise-tag-type-choice type is used within the unsigned-corim-map structure, which is used within COSE-Sign1-corim structure. The COSE-Sign1-corim provides for integrity of the CoTS data. CoTS structures are not intended for use as stand-alone, unsigned structures. The signature on a CoTS instance SHOULD be verified using a TA associated with the cots [purpose](#the-tas-list-purpose-type).
 
 ~~~~~~
 $concise-tag-type-choice /= #6.TBD(bytes .cbor concise-ta-stores)
@@ -197,11 +189,11 @@ tastore.purpose:
 
 tastore.perm_claims:
 
-: Contains a list of [claim values](#claims) [I-D.draft-ietf-rats-eat] for which tastore.keys list MAY be used to verify. When this field is absent, TAs in the tastore.keys list MAY be used to verify any claim subject to other restrictions.
+: Contains a list of [claim values](#claims) {{I-D.draft-ietf-rats-eat}} for which tastore.keys list MAY be used to verify. When this field is absent, TAs in the tastore.keys list MAY be used to verify any claim subject to other restrictions.
 
 tastore.excl_claims:
 
-: Contains a list of [claim values](#claims) [I-D.draft-ietf-rats-eat] for which tastore.keys list MUST NOT be used to verify. When this field is absent, TAs in the tastore.keys list may be used to verify any claim subject to other restrictions.
+: Contains a list of [claim values](#claims) {{I-D.draft-ietf-rats-eat}} for which tastore.keys list MUST NOT be used to verify. When this field is absent, TAs in the tastore.keys list may be used to verify any claim subject to other restrictions.
 
 tastore.keys:
 
@@ -243,7 +235,7 @@ pkix-cert-data = bstr
 
 The tastore.tas element is used to convey one or more trust anchors and an optional set of one or more CA certificates. TAs are implicitly trusted, i.e., no verification is required prior to use. However, limitations on the use of the TA may be asserted in the corresponding concise-ta-store-map or within the TA itself. The tastore.cas field provides certificates that may be useful in the context where the corresponding concise-ta-store-map is used. These certificates are not implicitly trusted and MUST be validated to a trust anchor before use. End entity certificates SHOULD NOT appear in the tastore.cas list.
 
-The structure of the data contained in the data field of a trust-anchor is indicated by the format field. The pkix-cert-type is used to represent a binary, DER-encoded X.509 Certificate as defined in section 4.1 of [RFC5280]. The pkix-key-type is used to represent a binary, DER-encoded SubjectPublicKeyInfo as defined in section 4.1 of [RFC5280]. The pkix-tainfo-type is used to represent a binary, DER-encoded TrustAnchorInfo as defined in section 2 of [RFC5914].
+The structure of the data contained in the data field of a trust-anchor is indicated by the format field. The pkix-cert-type is used to represent a binary, DER-encoded X.509 Certificate as defined in section 4.1 of {{RFC5280}}. The pkix-key-type is used to represent a binary, DER-encoded SubjectPublicKeyInfo as defined in section 4.1 of {{RFC5280}}. The pkix-tainfo-type is used to represent a binary, DER-encoded TrustAnchorInfo as defined in section 2 of {{RFC5914}}.
 
 The $pkix-ta-type provides an extensible means for representing trust anchor information. It is defined here as supporting the pkix-cert-type, pkix-spki-type or pkix-tainfo-type. The pkix-spki-type may be used where only a raw pubilc key is necessary. The pkix-cert-type may be used for most purposes, including scenarios where a raw public key is sufficient and those where additional information from a certificate is required. The pkix-tainfo-type is included to support scenarios where constraints information is directly associated with a public key or certificate (vs. constraints for a TA set as provided by tastore.purpose, tastore.perm_claims and tastore.excl_claims).
 
@@ -273,9 +265,9 @@ tastore.named_ta_store = 2
 
 An environment-group-list is a list of one or more environment-group-list-map elements that are used to determine if a given context is applicable. An empty list signifies all contexts SHOULD be considered as applicable.
 
-An environment-group-list-map is one of environment-map[I-D.draft-birkholz-rats-corim], [abbreviated-swid-tag-map](#the-abbreviated-swid-tag-map-container) or [named-ta-store](#the-named-ta-store-type).
+An environment-group-list-map is one of environment-map {{I-D.draft-birkholz-rats-corim}}, [abbreviated-swid-tag-map](#the-abbreviated-swid-tag-map-container) or [named-ta-store](#the-named-ta-store-type).
 
-As defined in [I-D.draft-birkholz-rats-corim], an envirionment-map may contain class-map, $instance-id-type-choice, $group-id-type-choice.
+As defined in {{I-D.draft-birkholz-rats-corim}}, an envirionment-map may contain class-map, $instance-id-type-choice, $group-id-type-choice.
 
 QUESTION: Should the above dispense with environment_map and concise_swid_tag and use or define some identity-focused structure with information common to both (possibly class-map from {{I-D.draft-birkholz-rats-corim}})? If not, should a more complete CoMID representation be used (instead of environment_map)?
 
@@ -342,11 +334,11 @@ For example, when verifying a CoRIM, each element in a triples-group MUST have a
 
 ## Verifying a concise-ta-stores RIM
 
-[I-D.draft-birkholz-rats-corim] defers verification rules to [RFC8152] and this document follows suit with the additional recommendation that the public key used to verify the RIM SHOULD be present in or chain to a public key present in a concise-ta-store-map with purpose set to cots.
+[I-D.draft-birkholz-rats-corim] defers verification rules to {{RFC8152}} and this document follows suit with the additional recommendation that the public key used to verify the RIM SHOULD be present in or chain to a public key present in a concise-ta-store-map with purpose set to cots.
 
 # CDDL definitions
 
-The CDDL definitions present in this document are provided below. Definitions from [I-D.draft-birkholz-rats-corim]  are not repeated here.
+The CDDL definitions present in this document are provided below. Definitions from {{I-D.draft-birkholz-rats-corim}}  are not repeated here.
 
 ~~~~~~
 concise-ta-stores = [+ concise-ta-store-map]
@@ -687,9 +679,9 @@ h'
 
 # Security Considerations
 
-As a profile of CoRIM, the security considerations from [I-D.draft-birkholz-rats-corim] apply.
+As a profile of CoRIM, the security considerations from {{I-D.draft-birkholz-rats-corim}} apply.
 
-As a means of managing trust anchors, the security considerations from [RFC6024] and [RFC5934] apply. a CoTS signer is roughly analogous to a "management trust anchor" as described in [RFC5934].
+As a means of managing trust anchors, the security considerations from {{RFC6024}} and {{RFC5934}} apply. a CoTS signer is roughly analogous to a "management trust anchor" as described in {{RFC5934}}.
 
 # IANA Considerations
 
