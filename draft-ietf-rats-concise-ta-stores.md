@@ -32,7 +32,7 @@ author:
   email: yogesh.deshpande@arm.com
 
 normative:
-  I-D.draft-birkholz-rats-corim:
+  I-D.draft-ietf-rats-corim:
   I-D.draft-ietf-rats-eat: EAT
   I-D.draft-ietf-sacm-coswid:
   RFC5280:
@@ -74,7 +74,7 @@ Trust anchor (TA) stores may be used for several purposes in the Remote Attestat
 
 The RATS architecture {{RFC9334}} uses the definition of a trust anchor from {{RFC6024}}: "A trust anchor represents an authoritative entity via a public key and associated data.  The public key is used to verify digital signatures, and the associated data is used to constrain the types of information for which the trust anchor is authoritative." In the context of RATS, a trust anchor may be a public key or a symmetric key. This document focuses on trust anchors that are represented as public keys.
 
-The Concise Reference Integrity Manifest (CoRIM) {{I-D.draft-birkholz-rats-corim}} specification defines a binary encoding for reference values using the Concise Binary Object Representation (CBOR) {{RFC8949}}. Amongst other information, a CoRIM may include key material for use in verifying evidence from an attesting environment (see section 3.11 in {{I-D.draft-birkholz-rats-corim}}). The extension in this document aims to enable public key material to be decoupled from reference data for several reasons, described below.
+The Concise Reference Integrity Manifest (CoRIM) {{I-D.draft-ietf-rats-corim}} specification defines a binary encoding for reference values using the Concise Binary Object Representation (CBOR) {{RFC8949}}. Amongst other information, a CoRIM may include key material for use in verifying evidence from an attesting environment (see section 3.11 in {{I-D.draft-ietf-rats-corim}}). The extension in this document aims to enable public key material to be decoupled from reference data for several reasons, described below.
 
 Trust anchor (TA) and certification authority (CA) public keys may be less dynamic than the reference data that comprises much of a reference integrity manifest (RIM). For example, TA and CA lifetimes are typically fairly long while software versions change frequently. Conveying keys less frequently and indepedent from reference data enables a reduction in size of RIMs used to convey dynamic information and may result in a reduction in the size of aggregated data transferred to a verifier.  CoRIMs themselves are signed and some means of conveying CoRIM verification keys is required, though ultimately some out-of-band mechanism is required at least for bootstrapping purposes. Relying parties may verify attestations from both hardware and software sources and some trust anchors may be used to verify attestations from both hardware and software sources, as well. The verification information included in a CoRIM optionally includes a trust anchor, leaving trust anchor management to other mechanisms. Additionally, the CoRIM verification-map structure is tied to CoMIDs, leaving no simple means to convey verification information for CoSWIDs {{I-D.draft-ietf-sacm-coswid}}.
 
@@ -138,7 +138,7 @@ The concise-ta-stores type is the root element for distrbuting sets of trust anc
 concise-ta-stores = [+ concise-ta-store]
 ~~~~~~
 
-The $concise-tag-type-choice {{I-D.draft-birkholz-rats-corim}} is extended to include the concise-ta-stores structure. As shown in Section 4 of {{I-D.draft-birkholz-rats-corim}}, the $concise-tag-type-choice type is used within the unsigned-corim-map structure, which is used within COSE-Sign1-corim structure. The COSE-Sign1-corim provides for integrity of the CoTS data. CoTS structures are not intended for use as stand-alone, unsigned structures. The signature on a CoTS instance SHOULD be verified using a TA associated with the cots [purpose](#the-tas-list-purpose-type).
+The $concise-tag-type-choice {{I-D.draft-ietf-rats-corim}} is extended to include the concise-ta-stores structure. As shown in Section 4 of {{I-D.draft-ietf-rats-corim}}, the $concise-tag-type-choice type is used within the unsigned-corim-map structure, which is used within COSE-Sign1-corim structure. The COSE-Sign1-corim provides for integrity of the CoTS data. CoTS structures are not intended for use as stand-alone, unsigned structures. The signature on a CoTS instance SHOULD be verified using a TA associated with the cots [purpose](#the-tas-list-purpose-type).
 
 ~~~~~~
 $concise-tag-type-choice /= #6.TBD(bytes .cbor concise-ta-stores)
@@ -146,7 +146,7 @@ $concise-tag-type-choice /= #6.TBD(bytes .cbor concise-ta-stores)
 
 ### The concise-ta-store-map Container
 
-A concise-ta-store-map is a trust anchor store where the applicability of the store is established by the tastore.environment field with optional constraints on use of trust anchors found in the tastore.keys field defined by the tastore.purpose, tastore.perm_claims and tastore.excl_claims fields.
+A `concise-ta-store-map` is a trust anchor store where the applicability of the store is established by the `tastore.environment` field with optional constraints on use of trust anchors found in the `tastore.keys` field defined by the `tastore.purpose`, `tastore.perm_claims` and `tastore.excl_claims` fields.
 
 ~~~~~~
 concise-ta-store-map = {
@@ -171,39 +171,39 @@ tastore.keys = 6
 
 The following describes each member of the concise-ta-store-map.
 
-tastore.language:
+`tastore.language`:
 
 : A textual language tag that conforms with the IANA Language Subtag Registry {{-language-subtag}}.
 
-tastore.store-identity:
+`tastore.store-identity`:
 
-: A composite identifier containing identifying attributes that enable global unique identification of a TA store instance across versions and facilitate linking from other artifacts. The tag-identity-map type is defined in {{I-D.draft-birkholz-rats-corim}}.
+: A composite identifier containing identifying attributes that enable global unique identification of a TA store instance across versions and facilitate linking from other artifacts. The `tag-identity-map` type is defined in {{I-D.draft-ietf-rats-corim}}.
 
-tastore.environment:
+`tastore.environment`:
 
-: A list of environment definitions that limit the contexts for which the tastore.keys list is applicable. If the tastore.environment is empty, TAs in the tastore.keys list may be used for any environment.
+: A list of environment definitions that limit the contexts for which the `tastore.keys` list is applicable. If the `tastore.environment` is empty, TAs in the `tastore.keys` list may be used for any environment.
 
-tastore.purpose:
+`tastore.purpose`:
 
-: Contains a list of [purposes](#the-tas-list-purpose-type) for which the tastore.keys list may be used. When absent, TAs in the tastore.keys list may be used for any purpose. This field is simliar to the extendedKeyUsage extension defined in {{RFC5280}}. The initial list of purposes are: cots, corim, comid, coswid, eat, key-attestation, certificate
+: Contains a list of [purposes](#the-tas-list-purpose-type) for which the `tastore.keys` list may be used. When absent, TAs in the `tastore.keys` list may be used for any purpose. This field is simliar to the extendedKeyUsage extension defined in {{RFC5280}}. The initial list of purposes are: `cots`, `corim`, `comid`, `coswid`, `eat`, `key-attestation`, `certificate`
 
-tastore.perm_claims:
+`tastore.perm_claims`:
 
-: Contains a list of [claim values](#claims) {{I-D.draft-ietf-rats-eat}} for which tastore.keys list MAY be used to verify. When this field is absent, TAs in the tastore.keys list MAY be used to verify any claim subject to other restrictions.
+: Contains a list of [claim values](#claims) {{I-D.draft-ietf-rats-eat}} for which `tastore.keys` list MAY be used to verify. When this field is absent, TAs in the `tastore.keys` list MAY be used to verify any claim subject to other restrictions.
 
-tastore.excl_claims:
+`tastore.excl_claims`:
 
-: Contains a list of [claim values](#claims) {{I-D.draft-ietf-rats-eat}} for which tastore.keys list MUST NOT be used to verify. When this field is absent, TAs in the tastore.keys list may be used to verify any claim subject to other restrictions.
+: Contains a list of [claim values](#claims) {{I-D.draft-ietf-rats-eat}} for which `tastore.keys` list MUST NOT be used to verify. When this field is absent, TAs in the `tastore.keys` list may be used to verify any claim subject to other restrictions.
 
-tastore.keys:
+`tastore.keys`:
 
 : Contains a list of one or more TAs and an optional list of one or more CA certificates.
 
-The perm_claims and excl_claims constraints MAY alternatively be expressed as extensions in a TA or CA. Inclusion of support here is intended as an aid for environments that find CBOR encoding support more readily available than DER encoding support.
+The `perm_claims` and `excl_claims` constraints MAY alternatively be expressed as extensions in a TA or CA. Inclusion of support here is intended as an aid for environments that find CBOR encoding support more readily available than DER encoding support.
 
 ### The cas-and-tas-map Container
 
-The cas-and-tas-map container provides the means of representing trust anchors and, optionally, CA certificates.
+The `cas-and-tas-map` container provides the means of representing trust anchors and, optionally, CA certificates.
 
 ~~~~~~
 trust-anchor = [
@@ -233,19 +233,19 @@ tastore.pkix-spki-type = 2
 pkix-cert-data = bstr
 ~~~~~~
 
-The tastore.tas element is used to convey one or more trust anchors and an optional set of one or more CA certificates. TAs are implicitly trusted, i.e., no verification is required prior to use. However, limitations on the use of the TA may be asserted in the corresponding concise-ta-store-map or within the TA itself. The tastore.cas field provides certificates that may be useful in the context where the corresponding concise-ta-store-map is used. These certificates are not implicitly trusted and MUST be validated to a trust anchor before use. End entity certificates SHOULD NOT appear in the tastore.cas list.
+The `tastore.tas` element is used to convey one or more trust anchors and an optional set of one or more CA certificates. TAs are implicitly trusted, i.e., no verification is required prior to use. However, limitations on the use of the TA may be asserted in the corresponding `concise-ta-store-map` or within the TA itself. The `tastore.cas` field provides certificates that may be useful in the context where the corresponding `concise-ta-store-map` is used. These certificates are not implicitly trusted and MUST be validated to a trust anchor before use. End entity certificates SHOULD NOT appear in the tastore.cas list.
 
-The structure of the data contained in the data field of a trust-anchor is indicated by the format field. The pkix-cert-type is used to represent a binary, DER-encoded X.509 Certificate as defined in section 4.1 of {{RFC5280}}. The pkix-key-type is used to represent a binary, DER-encoded SubjectPublicKeyInfo as defined in section 4.1 of {{RFC5280}}. The pkix-tainfo-type is used to represent a binary, DER-encoded TrustAnchorInfo as defined in section 2 of {{RFC5914}}.
+The structure of the data contained in the data field of a trust-anchor is indicated by the format field. The `pkix-cert-type` is used to represent a binary, DER-encoded X.509 Certificate as defined in {{Section 4.1 of RFC5280}}. The `pkix-key-type` is used to represent a binary, DER-encoded SubjectPublicKeyInfo as defined in {{Section 4.1 of RFC5280}}. The `pkix-tainfo-type` is used to represent a binary, DER-encoded TrustAnchorInfo as defined in {{Section 2 of RFC5914}}.
 
-The $pkix-ta-type provides an extensible means for representing trust anchor information. It is defined here as supporting the pkix-cert-type, pkix-spki-type or pkix-tainfo-type. The pkix-spki-type may be used where only a raw pubilc key is necessary. The pkix-cert-type may be used for most purposes, including scenarios where a raw public key is sufficient and those where additional information from a certificate is required. The pkix-tainfo-type is included to support scenarios where constraints information is directly associated with a public key or certificate (vs. constraints for a TA set as provided by tastore.purpose, tastore.perm_claims and tastore.excl_claims).
+The `$pkix-ta-type` provides an extensible means for representing trust anchor information. It is defined here as supporting the `pkix-cert-type`, `pkix-spki-type` or `pkix-tainfo-type`. The `pkix-spki-type` may be used where only a raw pubilc key is necessary. The `pkix-cert-type` may be used for most purposes, including scenarios where a raw public key is sufficient and those where additional information from a certificate is required. The `pkix-tainfo-type` is included to support scenarios where constraints information is directly associated with a public key or certificate (vs. constraints for a TA set as provided by `tastore.purpose`, `tastore.perm_claims` and `tastore.excl_claims`).
 
-The pkix-cert-data type is used to represent a binary, DER-encoded X.509 Certificate.
+The `pkix-cert-data` type is used to represent a binary, DER-encoded X.509 Certificate.
 
 ## Environment definition
 
-### The environment-group-list Array
+### The `environment-group-list` Array
 
-In CoRIM, "composite devices or systems are represented by a collection of Concise Module Identifiers (CoMID) and Concise Software Identifiers (CoSWID)". For trust anchor management purposes, targeting specific devices or systems may be too granular. For example, a trust anchor or set of trust anchors may apply to multiple device models or versions. The environment-map definition as used in a CoRIM is tightly bound to a CoMID. To allow for distribution of key material applicable to a specific or range of devices or software, the envrionment-group-list and environment-group-map are defined as below. These aim to enable use of coarse-grained naturally occurring values, like vendor, make, model, etc. to determine if a set of trust anchors is applicable to an environment.
+In CoRIM, "composite devices or systems are represented by a collection of Concise Module Identifiers (CoMID) and Concise Software Identifiers (CoSWID)". For trust anchor management purposes, targeting specific devices or systems may be too granular. For example, a trust anchor or set of trust anchors may apply to multiple device models or versions. The `environment-map` definition as used in a CoRIM is tightly bound to a CoMID. To allow for distribution of key material applicable to a specific or range of devices or software, the `envrionment-group-list` and `environment-group-map` are defined as below. These aim to enable use of coarse-grained naturally occurring values, like vendor, make, model, etc. to determine if a set of trust anchors is applicable to an environment.
 
 ~~~~~~
 environment-group-list = [* environment-group-list-map]
@@ -263,17 +263,17 @@ tastore.named_ta_store = 2
 
 ~~~~~~
 
-An environment-group-list is a list of one or more environment-group-list-map elements that are used to determine if a given context is applicable. An empty list signifies all contexts SHOULD be considered as applicable.
+An `environment-group-list` is a list of one or more `environment-group-list-map` elements that are used to determine if a given context is applicable. An empty list signifies all contexts SHOULD be considered as applicable.
 
-An environment-group-list-map is one of environment-map {{I-D.draft-birkholz-rats-corim}}, [abbreviated-swid-tag-map](#the-abbreviated-swid-tag-map-container) or [named-ta-store](#the-named-ta-store-type).
+An `environment-group-list-map` is one of `environment-map` {{I-D.draft-ietf-rats-corim}}, [`abbreviated-swid-tag-map`](#the-abbreviated-swid-tag-map-container) or [`named-ta-store`](#the-named-ta-store-type).
 
-As defined in {{I-D.draft-birkholz-rats-corim}}, an envirionment-map may contain class-map, $instance-id-type-choice, $group-id-type-choice.
+As defined in {{I-D.draft-ietf-rats-corim}}, an `envirionment-map` may contain `class-map`, `$instance-id-type-choice`, `$group-id-type-choice`.
 
-QUESTION: Should the above dispense with environment_map and concise_swid_tag and use or define some identity-focused structure with information common to both (possibly class-map from {{I-D.draft-birkholz-rats-corim}})? If not, should a more complete CoMID representation be used (instead of environment_map)?
+[^Q] Should the above dispense with `environment-map` and `concise-swid-tag` and use or define some identity-focused structure with information common to both (possibly `class-map` from {{I-D.draft-ietf-rats-corim}})? If not, should a more complete CoMID representation be used (instead of `environment-map`)?
 
-### The abbreviated-swid-tag-map Container
+### The `abbreviated-swid-tag-map` Container
 
-The abbreviated-swid-tag-map allows for expression of fields from a concise-swid-tag {{I-D.draft-ietf-sacm-coswid}} with all fields except entity designated as optional, compared to the concise-swid-tag definition that requires tag-id, tag-version and software-name to be present.
+The `abbreviated-swid-tag-map` allows for expression of fields from a `concise-swid-tag` {{I-D.draft-ietf-sacm-coswid}} with all fields except entity designated as optional, compared to the `concise-swid-tag` definition that requires `tag-id`, `tag-version` and `software-name` to be present.
 
 ~~~~~~
 abbreviated-swid-tag-map = {
@@ -295,9 +295,9 @@ abbreviated-swid-tag-map = {
 }
 ~~~~~~
 
-### The named-ta-store Type
+### The `named-ta-store` Type
 
-This specification allows for defining sets of trust anchors that are associated with an arbitrary name instead of relative to information typically expressed in a CoMID or CoSWID. Relying parties MUST be configured using the named-ta-store value to select a corresponding concise-ta-store-map for use.
+This specification allows for defining sets of trust anchors that are associated with an arbitrary name instead of relative to information typically expressed in a CoMID or CoSWID. Relying parties MUST be configured using the `named-ta-store` value to select a corresponding `concise-ta-store-map` for use.
 
 ~~~~~~
 named-ta-store = tstr
@@ -305,9 +305,9 @@ named-ta-store = tstr
 
 ## Constraints definition
 
-### The $$tas-list-purpose Type
+### The `$$tas-list-purpose` Type
 
-The $$tas-list-purpose type provides an extensible means of expressions actions for which the corresponding keys are applicable. For example, trust anchors in a concise-ta-store-map with purpose field set to eat may not be used to verify certification paths. Extended key usage values corresponding to each purpose listed below (except for certificate) are defined in a companion specification.
+The `$$tas-list-purpose` type provides an extensible means of expressions actions for which the corresponding keys are applicable. For example, trust anchors in a `concise-ta-store-map` with purpose field set to eat may not be used to verify certification paths. Extended key usage values corresponding to each purpose listed below (except for certificate) are defined in a companion specification.
 
 ~~~~~~
 $$tas-list-purpose /= "cots"
@@ -319,26 +319,27 @@ $$tas-list-purpose /= "certificate"
 $$tas-list-purpose /= "dloa"
 ~~~~~~
 
-TODO - define verification targets for each purpose.
-QUESTION - should this have a registry?
+[^TODO] Define verification targets for each purpose.
+
+[^Q] Should this have a registry?
 
 ### Claims
 
-A concise-ta-store-map may include lists of permitted and/or excluded claims [I-D.draft-ietf-rats-eat] that limit the applicability of trust anchors present in a cas-and-tas-map. A subsequent specification will define processing rules for evaluating constraints expressed in TA stores, TAs, CA certificates and end entity certificates.
+A `concise-ta-store-map` may include lists of permitted and/or excluded claims {{I-D.draft-ietf-rats-eat}} that limit the applicability of trust anchors present in a `cas-and-tas-map`. A subsequent specification will define processing rules for evaluating constraints expressed in TA stores, TAs, CA certificates and end entity certificates.
 
-## Processing a concise-ta-stores RIM
+## Processing a `concise-ta-stores` RIM
 
-When verifying a signature using a public key that chains back to a concise-ta-stores instance, elements in the concise-ta-stores array are processed beginning with the first element and proceeding until either a matching set is found that serves the desired purpose or no more elements are available. Each element is evaluated relative to the context, i.e., environment, purpose, artifact contents, etc.
+When verifying a signature using a public key that chains back to a `concise-ta-stores` instance, elements in the `concise-ta-stores` array are processed beginning with the first element and proceeding until either a matching set is found that serves the desired purpose or no more elements are available. Each element is evaluated relative to the context, i.e., environment, purpose, artifact contents, etc.
 
-For example, when verifying a CoRIM, each element in a triples-group MUST have an environment value that matches an environment-group-list-map element associated with the concise-ta-store-map containing the trust anchor used to verify the CoMID. Similarly, when verifying a CoSWID, the values in a abbreviated-swid-tag element from the concise-ta-store-map MUST match the CoSWID tag being verified. When verifying a certificate with DICE attestation extension, the information in each DiceTcbInfo element MUST be consistent with an environment-group-list-map associated with the concise-ta-store-map.
+For example, when verifying a CoRIM, each element in a triples-group MUST have an environment value that matches an `environment-group-list-map` element associated with the `concise-ta-store-map` containing the trust anchor used to verify the CoMID. Similarly, when verifying a CoSWID, the values in a `abbreviated-swid-tag` element from the `concise-ta-store-map` MUST match the CoSWID tag being verified. When verifying a certificate with DICE attestation extension, the information in each DiceTcbInfo element MUST be consistent with an `environment-group-list-map` associated with the `concise-ta-store-map`.
 
 ## Verifying a concise-ta-stores RIM
 
-[I-D.draft-birkholz-rats-corim] defers verification rules to {{RFC8152}} and this document follows suit with the additional recommendation that the public key used to verify the RIM SHOULD be present in or chain to a public key present in a concise-ta-store-map with purpose set to cots.
+{{I-D.draft-ietf-rats-corim}} defers verification rules to {{RFC8152}} and this document follows suit with the additional recommendation that the public key used to verify the RIM SHOULD be present in or chain to a public key present in a `concise-ta-store-map` with purpose set to `cots`.
 
 # CDDL definitions
 
-The CDDL definitions present in this document are provided below. Definitions from {{I-D.draft-birkholz-rats-corim}}  are not repeated here.
+The CDDL definitions present in this document are provided below. Definitions from {{I-D.draft-ietf-rats-corim}} are not repeated here.
 
 ~~~~~~
 concise-ta-stores = [+ concise-ta-store-map]
@@ -428,7 +429,7 @@ $tas-list-purpose /= "dloa"
 
 # Examples
 
-The following examples are isolated concise-ta-store-map instances shown as JSON for ease of reading. The final example is an ASCII hex representation of a CBOR-encoded concise-ta-stores instance containing each example below (and using a placeholder value for the concise-ta-stores tag).
+The following examples are isolated `concise-ta-store-map` instances shown as JSON for ease of reading. The final example is an ASCII hex representation of a CBOR-encoded `concise-ta-stores` instance containing each example below (and using a placeholder value for the `concise-ta-stores` tag).
 
 The TA store below contains a TA from a single organization ("Zesty Hands, Inc,") that is used to verify CoRIMs for that organization. Because this TA does not verify certificates, a bare public key is appropriate. It features a tag identity field containing a UUID for the tag identity and a version indication.
 
@@ -576,7 +577,7 @@ bGELiQX77ZP8tSUHVL6KpY"
 }
 ~~~~~~
 
-The dump below shows the COSE-Sign1-corim contents from the ASCII hex above. A full base64-encoded version of this example is given in Appendix A.
+The dump below shows the COSE-Sign1-corim contents from the ASCII hex above. A full base64-encoded version of this example is given in {{b64-examples}}
 
 ~~~~~~
 18([h'
@@ -679,7 +680,7 @@ h'
 
 # Security Considerations
 
-As a profile of CoRIM, the security considerations from {{I-D.draft-birkholz-rats-corim}} apply.
+As a profile of CoRIM, the security considerations from {{I-D.draft-ietf-rats-corim}} apply.
 
 As a means of managing trust anchors, the security considerations from {{RFC6024}} and {{RFC5934}} apply. a CoTS signer is roughly analogous to a "management trust anchor" as described in {{RFC5934}}.
 
@@ -694,15 +695,9 @@ IANA is requested to allocate tags in the "CBOR Tags" registry {{!IANA.cbor-tags
 
 --- back
 
-# Acknowledgments
-{:numbered="false"}
+# Examples Base64 Encodings {#b64-examples}
 
-TODO acknowledge.
-
-# Appendix A
-{:numbered="false"}
-
-The base64 encoded data below represents a signed CoRIM that features a concise-ta-stores containing the three examples shown above.
+The base64 encoded data below represents a signed CoRIM that features a `concise-ta-stores` containing the three examples shown above.
 
 ~~~~~~
 0oRYXaMBJgN0YXBwbGljYXRpb24vcmltK2Nib3IIWEGiAKIAdEFDTUUgTHRkIHN
@@ -767,3 +762,11 @@ ez4KGrolFKOZT6bvqf1sYQuJBfvtk/y1JQdUvoqlgEogDBGmHOSAABwRppVGeAW
 EAZ6C16XHpztE8GMFrs8O+M+HZChjI/bSuifXKR+S/1sM94n2/4i34u6O8mK0+h
 39fXr7CuLABiyY2zMiQ7PpmU
 ~~~~~~
+
+# Acknowledgments
+{:numbered="false"}
+
+TODO acknowledge.
+
+[^Q]: QUESTION:
+[^TODO]: TODO:
