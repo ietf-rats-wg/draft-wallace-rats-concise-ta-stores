@@ -5,11 +5,11 @@
 Remote ATtestation ProcedureS                                 C. Wallace
 Internet-Draft                                        Red Hound Software
 Intended status: Standards Track                              R. Housley
-Expires: 7 December 2023                             Vigil Security, LLC
+Expires: 7 June 2024                                 Vigil Security, LLC
                                                               T. Fossati
                                                             Y. Deshpande
                                                                      arm
-                                                             5 June 2023
+                                                         5 December 2023
 
 
                         Concise TA Stores (CoTS)
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 December 2023.
+   This Internet-Draft will expire on 7 June 2024.
 
 Copyright Notice
 
@@ -931,16 +931,16 @@ Table of Contents
    [I-D.draft-ietf-rats-corim]
               Birkholz, H., Fossati, T., Deshpande, Y., Smith, N., and
               W. Pan, "Concise Reference Integrity Manifest", Work in
-              Progress, Internet-Draft, draft-ietf-rats-corim-01, 9
-              March 2023, <https://datatracker.ietf.org/doc/html/draft-
-              ietf-rats-corim-01>.
+              Progress, Internet-Draft, draft-ietf-rats-corim-03, 23
+              October 2023, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-rats-corim-03>.
 
    [I-D.draft-ietf-rats-eat]
               Lundblade, L., Mandyam, G., O'Donoghue, J., and C.
               Wallace, "The Entity Attestation Token (EAT)", Work in
-              Progress, Internet-Draft, draft-ietf-rats-eat-19, 19
-              December 2022, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-rats-eat-19>.
+              Progress, Internet-Draft, draft-ietf-rats-eat-22, 14
+              October 2023, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-rats-eat-22>.
 
    [I-D.draft-ietf-sacm-coswid]
               Birkholz, H., Fitzgerald-McKay, J., Schmidt, C., and D.
@@ -951,11 +951,11 @@ Table of Contents
 
    [IANA.cbor-tags]
               IANA, "Concise Binary Object Representation (CBOR) Tags",
-              <https://www.iana.org/assignments/cbor-tags>.
+              <http://www.iana.org/assignments/cbor-tags>.
 
    [IANA.language-subtag-registry]
               IANA, "Language Subtag Registry",
-              <https://www.iana.org/assignments/language-subtag-
+              <http://www.iana.org/assignments/language-subtag-
               registry>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
