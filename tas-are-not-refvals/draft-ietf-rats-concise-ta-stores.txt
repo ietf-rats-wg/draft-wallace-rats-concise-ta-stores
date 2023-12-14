@@ -117,14 +117,15 @@ Table of Contents
    CoRIM may include key material for use in verifying evidence from an
    attesting environment (see Sections 3.1.4.4 and 3.1.4.5 of
    [I-D.draft-ietf-rats-corim]).  The extension in this document aims to
-   enable public key material to be decoupled from reference data and
-   other kinds of endorsement data for several reasons, described below.
+   enable public key material to be decoupled from reference values and
+   other kinds of endorsement values for several reasons, described
+   below.
 
    Trust anchor (TA) and certification authority (CA) public keys may be
-   less dynamic than the reference data that comprises much of a
+   less dynamic than the reference values that comprise much of a
    reference integrity manifest (RIM).  For example, TA and CA lifetimes
    are typically fairly long while software versions change frequently.
-   Conveying keys less frequently and indepedent from reference data
+   Conveying keys less frequently and indepedent from reference values
    enables a reduction in size of RIMs used to convey dynamic
    information and may result in a reduction in the size of aggregated
    data transferred to a verifier.  CoRIMs themselves are signed and
@@ -140,16 +141,17 @@ Table of Contents
    information for CoSWIDs [RFC9393].
 
    This document defines means to decouple TAs and CAs from reference
-   data and adds support for constraining the use of trust anchors,
-   chiefly by limiting the environments to which a set of trust anchors
-   is applicable.  This constraints mechanism is similar to that in
-   [fido-metadata] and [fido-service] and should align with existing
-   attestation verification practices that tend to use per-vendor trust
-   anchors.  TA store instances may be further constrained using coarse-
-   grained purpose values or a set of finer-grained permitted or
-   excluded claims.  The trust anchor formats supported by this draft
-   allow for per-trust anchor constraints, if desired.  Conveyance of
-   trust anchors is the primary goal, CA certificates may optionally be
+   values and other kinds of endorsements and adds support for
+   constraining the use of trust anchors, chiefly by limiting the
+   environments to which a set of trust anchors is applicable.  This
+   constraints mechanism is similar to that in [fido-metadata] and
+   [fido-service] and should align with existing attestation
+   verification practices that tend to use per-vendor trust anchors.  TA
+   store instances may be further constrained using coarse-grained
+   purpose values or a set of finer-grained permitted or excluded
+   claims.  The trust anchor formats supported by this draft allow for
+   per-trust anchor constraints, if desired.  Conveyance of trust
+   anchors is the primary goal, CA certificates may optionally be
    included for convenience.
 
 1.1.  Constraints
