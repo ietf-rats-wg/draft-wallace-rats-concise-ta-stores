@@ -1,0 +1,2215 @@
+<!DOCTYPE html>
+<html lang="en" class="Internet-Draft">
+<head>
+<meta charset="utf-8">
+<meta content="Common,Latin" name="scripts">
+<meta content="initial-scale=1.0" name="viewport">
+<title>Concise TA Stores (CoTS)</title>
+<meta content="Carl Wallace" name="author">
+<meta content="Russ Housley" name="author">
+<meta content="Thomas Fossati" name="author">
+<meta content="Yogesh Deshpande" name="author">
+<meta content="
+       Trust anchor (TA) stores may be used for several purposes in the Remote Attestation Procedures (RATS) architecture including verifying endorsements, reference values, digital letters of approval, attestations, or public key certificates. This document describes a Concise Reference Integrity Manifest (CoRIM) extension that may be used to convey optionally constrained trust anchor stores containing optionally constrained trust anchors in support of these purposes. 
+    " name="description">
+<meta content="xml2rfc 3.18.2" name="generator">
+<meta content="Internet-Draft" name="keyword">
+<meta content="draft-ietf-rats-concise-ta-stores-latest" name="ietf.draft">
+<!-- Generator version information:
+  xml2rfc 3.18.2
+    Python 3.11.6
+    ConfigArgParse 1.7
+    google-i18n-address 3.1.0
+    intervaltree 3.1.0
+    Jinja2 3.1.2
+    lxml 4.9.3
+    platformdirs 4.1.0
+    pycountry 22.3.5
+    PyYAML 6.0.1
+    requests 2.31.0
+    setuptools 68.2.2
+    six 1.16.0
+    wcwidth 0.2.12
+-->
+<link href="draft-ietf-rats-concise-ta-stores.xml" rel="alternate" type="application/rfc+xml">
+<link href="#copyright" rel="license">
+<style type="text/css">@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-cyrillic.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-cyrillic.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Lora SemiBold'), local('Lora-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-semibold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Cabin Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/cabincondensed-semibold-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Cabin Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/cabincondensed-semibold-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Cabin Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/cabincondensed-semibold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Oxygen Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Oxygen Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  color-scheme: light dark;
+  --background-color: #fff;
+  --text-color: #222;
+  --title-color: #191919;
+  --link-color: #2a6496;
+  --highlight-color: #f9f9f9;
+  --line-color: #eee;
+  --pilcrow-weak: #ddd;
+  --pilcrow-strong: #bbb;
+  --small-font-size: 14.5px;
+  --font-mono: 'Oxygen Mono', monospace;
+  scrollbar-color: #bbb #eee;
+}
+body {
+  max-width: 600px;
+  margin: 75px auto;
+  padding: 0 5px;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  font: 16px/22px "Lora", serif;
+  scroll-behavior: smooth;
+}
+
+.ears {
+  display: none;
+}
+
+/* headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Cabin Condensed", sans-serif;
+  font-weight: 600;
+  margin: 0.8em 0 0.3em;
+  font-size-adjust: 0.5;
+  color: var(--title-color);
+}
+h1#title {
+  font-size: 32px;
+  line-height: 40px;
+  clear: both;
+}
+h1#title, h1#rfcnum {
+  margin: 1.5em 0 0.2em;
+}
+h1#rfcnum + h1#title {
+  margin: 0.2em 0;
+}
+
+h1, h2, h3 {
+  font-size: 22px;
+  line-height: 27px;
+}
+h4, h5, h6 {
+  font-size: 20px;
+  line-height: 24px;
+}
+
+/* general structure */
+.author {
+  padding-bottom: 0.3em;
+}
+#abstract+p {
+  font-size: 18px;
+  line-height: 24px;
+}
+#abstract+p code, #abstract+p samp, #abstract+p tt {
+  font-size: 16px;
+  line-height: 0;
+}
+
+p {
+  padding: 0;
+  margin: 0.5em 0;
+  text-align: left;
+}
+div {
+  margin: 0;
+}
+.alignRight.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignRight.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignRight {
+  margin: 1em 0;
+}
+.alignRight > *:first-child {
+  border: none;
+  margin: 0;
+  float: right;
+  clear: both;
+}
+.alignRight > *:nth-child(2) {
+  clear: both;
+  display: block;
+  border: none;
+}
+svg {
+  display: block;
+}
+/* font-family isn't space-separated, but =~ will have to do */
+svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
+  font-family: var(--font-mono);
+}
+.alignCenter.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignCenter.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignCenter {
+  margin: 1em 0;
+}
+.alignCenter > *:first-child {
+  border: none;
+  /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
+     support flexbox yet.
+  */
+  display: table;
+  margin: 0 auto;
+}
+
+/* lists */
+ol, ul {
+  padding: 0;
+  margin: 0 0 0.5em 2em;
+}
+:is(ol, ul) :is(ol, ul) {
+  margin-left: 1em;
+}
+li {
+  margin: 0 0 0.25em 0;
+}
+.ulCompact li {
+  margin: 0;
+}
+ul.empty, .ulEmpty {
+  list-style-type: none;
+}
+ul.empty li, .ulEmpty li {
+  margin-top: 0.5em;
+}
+:is(ul, ol).compact, .ulCompact, .olCompact {
+  line-height: 1;
+  margin: 0 0 0 2em;
+}
+
+/* definition lists */
+dl {
+  clear: left;
+  --indent: 3ch;
+  /* --indent: attr(indent ch); not supported in any browser, but we can dream */
+}
+dl.olPercent {
+  --indent: 5ch;
+}
+dl > dt {
+  float: left;
+  margin-right: 2ch;
+  min-width: 8ch;
+}
+dl.dlNewline > dt {
+  float: none;
+}
+dl > dd {
+  margin-bottom: .8em;
+  margin-left: var(--indent) !important; /* stupid element overrides */
+  min-height: 2ex;
+}
+dl.olPercent > dt {
+  min-width: calc(var(--indent) - 2ch);
+}
+:is(dl.compact, .dlCompact) > dd {
+  margin-bottom: 0;
+}
+:is(dl.compact, .dlCompact) > dd > :is(:first-child, .break:first-child + *) {
+  margin-top: 0;
+}
+:is(dl.compact, .dlCompact) > dd > :is(:last-child) {
+  margin-bottom: 0;
+}
+dl > dd > dl {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+}
+:is(dd, span).break {
+  display: none;
+}
+
+/* links */
+a, a[href].selfRef:hover {
+  text-decoration: none;
+}
+a[href] {
+  color: var(--link-color);
+}
+a[href].selfRef, .iref + a[href].internal {
+  color: var(--text-color);
+}
+a[href]:hover {
+  text-decoration: underline;
+}
+a[href].selfRef:hover {
+  background-color: var(--highlight-color);
+}
+a.xref:is(.cite, .auto), :is(#status-of-memo, #copyright) a {
+  white-space: nowrap;
+}
+
+/* Figures */
+tt, code, pre {
+  background-color: var(--highlight-color);
+  font: 14px/22px var(--font-mono);
+}
+tt, code {
+  /* changing the font for inline elements leads to different ascender
+     and descender heights; as we want to retain baseline alignment,
+     remove leading to avoid altering the final height of lines
+     note: this fails if these blocks take an entire line,
+     a different solution would be great */
+  line-height: 0;
+}
+:is(h1, h2, h3, h4, h5, h6) :is(tt, code) {
+  font-size: 84%;
+}
+pre {
+  border: 1px solid var(--line-color);
+  font-size: 13.5px;
+  line-height: 16px;
+  letter-spacing: -0.2px;
+  margin: 5px;
+  padding: 5px;
+}
+img {
+  max-width: 100%;
+}
+figure {
+  margin: 0.5em 0;
+  padding: 0;
+}
+figure blockquote {
+  margin: 0.8em 0.4em 0.4em;
+}
+figcaption, caption {
+  font-style: italic;
+  margin: 0.5em 1.5em;
+  text-align: left;
+}
+@media screen {
+  /* Auto-collapse boilerplate. */
+  :is(#status-of-memo, #copyright) p {
+    margin: -2px 0;
+    max-height: 0;
+    transition: max-height 2s ease, margin 0.5s ease 0.5s;
+    overflow: hidden;
+  }
+  :is(#status-of-memo, #copyright):hover p,
+  :is(#status-of-memo, #copyright) h2:target ~ p {
+    margin: 0.5em 0;
+    max-height: 500px;
+    overflow: auto;
+  }
+  pre, svg {
+    display: inline-block;
+    overflow-x: auto;
+  }
+  pre {
+    max-width: 100%;
+    width: calc(100% - 22px - 1em);
+  }
+  svg {
+    max-width: calc(100% - 22px - 1em);
+  }
+  figure pre {
+    display: block;
+    width: calc(100% - 25px);
+  }
+  :is(pre, svg) + .pilcrow {
+    display: inline-block;
+    vertical-align: text-bottom;
+    padding-bottom: 8px;
+  }
+}
+
+/* aside, blockquote */
+aside, blockquote {
+  margin-left: 0;
+  padding: 0 2em;
+  font-style: italic;
+}
+blockquote {
+  margin: 1em 0;
+}
+cite {
+  display: block;
+  text-align: right;
+  font-style: italic;
+}
+
+/* tables */
+table {
+  max-width: 100%;
+  margin: 0 0 1em;
+  border-collapse: collapse;
+}
+table.right {
+  margin-left: auto;
+}
+table.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+table.left {
+  margin-right: auto;
+}
+thead, tbody {
+  border: 1px solid var(--line-color);
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 5px 10px;
+}
+th {
+  background-color: var(--line-color);
+}
+:is(tr:nth-child(2n), thead+tbody > tr:nth-child(2n+1)) > td {
+  background-color: var(--background-color);
+}
+:is(tr:nth-child(2n+1), thead+tbody > tr:nth-child(2n)) > td {
+  background-color: var(--highlight-color);
+}
+table caption {
+  margin: 0;
+  padding: 3px 0 3px 1em;
+}
+table p {
+  margin: 0;
+}
+
+/* pilcrow */
+a.pilcrow {
+  margin-left: 3px;
+  opacity: 0.2;
+  user-select: none;
+}
+a.pilcrow[href] { color: var(--pilcrow-weak); }
+a.pilcrow[href]:hover { text-decoration: none; }
+@media not print {
+  :hover > a.pilcrow {
+    opacity: 1;
+  }
+  a.pilcrow[href]:hover {
+    color: var(--pilcrow-strong);
+    background-color: transparent;
+  }
+}
+@media print {
+  a.pilcrow {
+    display: none;
+  }
+}
+
+/* misc */
+hr {
+  border: 0;
+  border-top: 1px solid var(--line-color);
+}
+.bcp14 {
+  font-variant: small-caps;
+  font-weight: 600;
+  font-size: var(--small-font-size);
+}
+.role {
+  font-variant: all-small-caps;
+}
+sub, sup {
+  line-height: 1;
+  font-size: 80%;
+}
+
+/* info block */
+#identifiers {
+  margin: 0;
+  font-size: var(--small-font-size);
+  line-height: 18px;
+  --identifier-width: 15ch;
+}
+#identifiers dt {
+  width: var(--identifier-width);
+  min-width: var(--identifier-width);
+  clear: left;
+  float: left;
+  text-align: right;
+  margin-right: 1ch;
+}
+#identifiers dd {
+  margin: 0;
+  margin-left: calc(1em + var(--identifier-width)) !important;
+  min-width: 5em;
+}
+#identifiers .authors .author {
+  display: inline-block;
+  margin-right: 1.5em;
+}
+#identifiers .authors .org {
+  font-style: italic;
+}
+
+/* The prepared/rendered info at the very bottom of the page */
+.docInfo {
+  color: #999;
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: 2em;
+}
+.docInfo .prepared {
+  float: left;
+}
+.docInfo .prepared {
+  float: right;
+}
+
+/* table of contents */
+#toc {
+  padding: 0.75em 0 2em 0;
+  margin-bottom: 1em;
+}
+#toc nav ul {
+  margin: 0 0.5em 0 0;
+  padding: 0;
+  list-style: none;
+}
+#toc nav li {
+  line-height: 1.3em;
+  margin: 2px 0;
+  padding-left: 1.2em;
+  text-indent: -1.2em;
+}
+#toc a.xref {
+  white-space: normal;
+}
+/* references */
+.references dt {
+  text-align: right;
+  font-weight: bold;
+  min-width: 10ch;
+  margin-right: 1.5ch;
+}
+.references dt:target::before {
+  content: "⇒";
+  width: 15px;
+  margin: 0 10px 0 -25px;
+}
+.references dd {
+  margin-left: 12ch !important;
+  overflow: auto;
+}
+
+.refInstance {
+  margin-bottom: 1.25em;
+}
+
+.references .ascii {
+  margin-bottom: 0.25em;
+}
+
+/* index */
+#rfc\.index\.index + ul {
+  margin-left: 0;
+}
+
+/* authors */
+address.vcard {
+  font-style: normal;
+  margin: 1em 0;
+}
+address.vcard .nameRole {
+  font-weight: 700;
+  margin-left: 0;
+}
+address.vcard .label {
+  margin: 0.5em 0;
+}
+address.vcard .type {
+  display: none;
+}
+.alternative-contact {
+  margin: 1.5em 0 1em;
+}
+hr.addr {
+  border-top: 1px dashed;
+  margin: 0;
+  color: #ddd;
+  max-width: calc(100% - 16px);
+}
+@media (min-width: 500px) {
+  #authors-addresses > section {
+    column-count: 2;
+    column-gap: 20px;
+  }
+  #authors-addresses > section > h2 {
+    column-span: all;
+  }
+  /* hack for break-inside: avoid-column */
+  #authors-addresses address {
+    display: inline-block;
+    break-inside: avoid-column;
+  }
+}
+
+.rfcEditorRemove p:first-of-type {
+  font-style: italic;
+}
+.cref {
+  background-color: rgba(249, 232, 105, 0.3);
+  padding: 2px 4px;
+}
+.crefSource {
+  font-style: italic;
+}
+/* alternative layout for smaller screens */
+@media screen and (max-width: 929px) {
+  #toc {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    padding: 1px 0 0 0;
+    margin: 0;
+    border-bottom: 1px solid #ccc;
+    opacity: 0.6;
+  }
+  #toc.active {
+      opacity: 1;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 2px 0 2px 6px;
+    padding-right: 1em;
+    font-size: 18px;
+    line-height: 24px;
+    min-width: 190px;
+    text-align: right;
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+  }
+  #toc h2::before { /* css hamburger */
+    float: right;
+    position: relative;
+    width: 1em;
+    height: 1px;
+    left: -164px;
+    margin: 8px 0 0 0;
+    background: white none repeat scroll 0 0;
+    box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+    content: "";
+  }
+  #toc nav {
+    display: none;
+    background-color: var(--background-color);
+    padding: 0.5em 1em 1em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    height: calc(100vh - 48px);
+    border-left: 1px solid #ddd;
+  }
+  #toc.active nav {
+    display: block;
+  }
+  /* Make the collapsed ToC header render white on gray also when it's a link */
+  #toc h2 a,
+  #toc h2 a:link,
+  #toc h2 a:focus,
+  #toc h2 a:hover,
+  #toc a.toplink,
+  #toc a.toplink:hover {
+    color: white;
+    background-color: #444;
+    text-decoration: none;
+  }
+  #toc a.toplink {
+    margin-top: 2px;
+  }
+}
+
+/* alternative layout for wide screens */
+@media screen and (min-width: 930px) {
+  body {
+    padding-right: 360px;
+    padding-right: calc(min(180px + 20%, 500px));
+  }
+  #toc {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    right: calc(50vw - 480px);
+    width: 312px;
+    margin: 0;
+    padding: 0;
+    z-index: 1;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 0.25em 1em 1em 0;
+  }
+  #toc nav {
+    display: block;
+    height: calc(90vh - 84px);
+    bottom: 0;
+    padding: 0.5em 0 2em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  #toc nav > ul  {
+    margin-bottom: 2em;
+  }
+  #toc ul {
+    margin: 0 0 0 4px;
+    font-size: var(--small-font-size);
+  }
+  #toc ul :is(p, li) {
+    margin: 2px 0;
+    line-height: 22px;
+  }
+  img { /* future proofing */
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* pagination */
+@media print {
+  body {
+    width: 100%;
+  }
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  #n-copyright-notice {
+    border-bottom: none;
+  }
+  #toc, #n-introduction {
+    page-break-before: always;
+  }
+  #toc {
+    border-top: none;
+    padding-top: 0;
+  }
+  figure, pre, .vcard {
+    page-break-inside: avoid;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  :is(h2, h3, h4, h5, h6)+*, dd {
+    page-break-before: avoid;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 10pt;
+  }
+  table {
+    border: 1px solid #ddd;
+  }
+  td {
+    border-top: 1px solid #ddd;
+  }
+  .toplink {
+    display: none;
+  }
+}
+
+@page :first {
+  padding-top: 0;
+  @top-left {
+    content: normal;
+    border: none;
+  }
+  @top-center {
+    content: normal;
+    border: none;
+  }
+  @top-right {
+    content: normal;
+    border: none;
+  }
+}
+
+@page {
+  size: A4;
+  margin-bottom: 45mm;
+  padding-top: 20px;
+}
+
+/* Changes introduced to fix issues found during implementation */
+
+/* Separate body from document info even without intervening H1 */
+section {
+  clear: both;
+}
+
+/* Top align author divs, to avoid names without organization dropping level with org names */
+.author {
+  vertical-align: top;
+}
+
+/* Style section numbers with more space between number and title */
+.section-number {
+  padding-right: 0.5em;
+}
+
+/* Add styling for a link in the ToC that points to the top of the document */
+a.toplink {
+  float: right;
+  margin: 8px 0.5em 0;
+}
+
+/* Provide styling for table cell text alignment */
+table .text-left {
+  text-align: left;
+}
+table .text-center {
+  text-align: center;
+}
+table .text-right {
+  text-align: right;
+}
+
+/* Make the alternative author contact information look less like just another
+   author, and group it closer with the primary author contact information */
+.alternative-contact {
+  margin: 0.5em 0 0.25em 0;
+}
+address .non-ascii {
+  margin: 0 0 0 2em;
+}
+
+/* With it being possible to set tables with alignment
+  left, center, and right, { width: 100%; } does not make sense */
+table {
+  width: auto;
+}
+
+/* Avoid reference text that sits in a block with very wide left margin,
+   because of a long floating dt label.*/
+.references dd {
+  overflow: visible;
+}
+
+/* Control caption placement */
+caption {
+  caption-side: bottom;
+}
+
+/* Limit the width of the author address vcard, so names in right-to-left
+   script don't end up on the other side of the page. */
+
+address.vcard {
+  max-width: 20em;
+  margin-right: auto;
+}
+
+/* For address alignment dependent on LTR or RTL scripts */
+address div.left {
+  text-align: left;
+}
+address div.right {
+  text-align: right;
+}
+
+/* Dark mode. */
+@media (prefers-color-scheme: dark) {
+:root {
+  --background-color: #121212;
+  --text-color: #f0f0f0;
+  --title-color: #fff;
+  --link-color: #4da4f0;
+  --highlight-color: #282828;
+  --line-color: #444;
+  --pilcrow-weak: #444;
+  --pilcrow-strong: #666;
+  scrollbar-color: #777 #333;
+}
+}
+
+/* SVG Trick: a prefix match works because only black and white are allowed */
+svg :is([stroke="black"], [stroke^="#000"]) {
+  stroke: var(--text-color);
+}
+svg :is([stroke="white"], [stroke^="#fff"]) {
+  stroke: var(--background-color);
+}
+svg :is([fill="black"], [fill^="#000"], :not([fill])) {
+  fill: var(--text-color);
+}
+svg :is([fill="white"], [fill^="#fff"]) {
+  fill: var(--background-color);
+}
+</style>
+
+</head>
+<body class="xml2rfc">
+<table class="ears">
+<thead><tr>
+<td class="left">Internet-Draft</td>
+<td class="center">CoTS</td>
+<td class="right">December 2023</td>
+</tr></thead>
+<tfoot><tr>
+<td class="left">Wallace, et al.</td>
+<td class="center">Expires 16 June 2024</td>
+<td class="right">[Page]</td>
+</tr></tfoot>
+</table>
+<div id="external-metadata" class="document-information"></div>
+<div id="internal-metadata" class="document-information">
+<dl id="identifiers">
+<dt class="label-workgroup">Workgroup:</dt>
+<dd class="workgroup">Remote ATtestation ProcedureS</dd>
+<dt class="label-internet-draft">Internet-Draft:</dt>
+<dd class="internet-draft">draft-ietf-rats-concise-ta-stores-latest</dd>
+<dt class="label-published">Published:</dt>
+<dd class="published">
+<time datetime="2023-12-14" class="published">14 December 2023</time>
+    </dd>
+<dt class="label-intended-status">Intended Status:</dt>
+<dd class="intended-status">Standards Track</dd>
+<dt class="label-expires">Expires:</dt>
+<dd class="expires"><time datetime="2024-06-16">16 June 2024</time></dd>
+<dt class="label-authors">Authors:</dt>
+<dd class="authors">
+<div class="author">
+      <div class="author-name">C. Wallace</div>
+<div class="org">Red Hound Software</div>
+</div>
+<div class="author">
+      <div class="author-name">R. Housley</div>
+<div class="org">Vigil Security, LLC</div>
+</div>
+<div class="author">
+      <div class="author-name">T. Fossati</div>
+<div class="org">arm</div>
+</div>
+<div class="author">
+      <div class="author-name">Y. Deshpande</div>
+<div class="org">arm</div>
+</div>
+</dd>
+</dl>
+</div>
+<h1 id="title">Concise TA Stores (CoTS)</h1>
+<section id="section-abstract">
+      <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
+<p id="section-abstract-1">Trust anchor (TA) stores may be used for several purposes in the Remote Attestation Procedures (RATS) architecture including verifying endorsements, reference values, digital letters of approval, attestations, or public key certificates. This document describes a Concise Reference Integrity Manifest (CoRIM) extension that may be used to convey optionally constrained trust anchor stores containing optionally constrained trust anchors in support of these purposes.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+</section>
+<section class="note rfcEditorRemove" id="section-note.1">
+      <h2 id="name-about-this-document">
+<a href="#name-about-this-document" class="section-name selfRef">About This Document</a>
+      </h2>
+<p id="section-note.1-1">This note is to be removed before publishing as an RFC.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
+<p id="section-note.1-2">
+        Status information for this document may be found at <span><a href="https://datatracker.ietf.org/doc/draft-ietf-rats-concise-ta-stores/">https://datatracker.ietf.org/doc/draft-ietf-rats-concise-ta-stores/</a></span>.<a href="#section-note.1-2" class="pilcrow">¶</a></p>
+<p id="section-note.1-3">
+        Discussion of this document takes place on the
+        rats Working Group mailing list (<span><a href="mailto:rats@ietf.org">mailto:rats@ietf.org</a></span>),
+        which is archived at <span><a href="https://mailarchive.ietf.org/arch/browse/rats/">https://mailarchive.ietf.org/arch/browse/rats/</a></span>.
+        Subscribe at <span><a href="https://www.ietf.org/mailman/listinfo/rats/">https://www.ietf.org/mailman/listinfo/rats/</a></span>.<a href="#section-note.1-3" class="pilcrow">¶</a></p>
+</section>
+<div id="status-of-memo">
+<section id="section-boilerplate.1">
+        <h2 id="name-status-of-this-memo">
+<a href="#name-status-of-this-memo" class="section-name selfRef">Status of This Memo</a>
+        </h2>
+<p id="section-boilerplate.1-1">
+        This Internet-Draft is submitted in full conformance with the
+        provisions of BCP 78 and BCP 79.<a href="#section-boilerplate.1-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-2">
+        Internet-Drafts are working documents of the Internet Engineering Task
+        Force (IETF). Note that other groups may also distribute working
+        documents as Internet-Drafts. The list of current Internet-Drafts is
+        at <span><a href="https://datatracker.ietf.org/drafts/current/">https://datatracker.ietf.org/drafts/current/</a></span>.<a href="#section-boilerplate.1-2" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-3">
+        Internet-Drafts are draft documents valid for a maximum of six months
+        and may be updated, replaced, or obsoleted by other documents at any
+        time. It is inappropriate to use Internet-Drafts as reference
+        material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-4">
+        This Internet-Draft will expire on 16 June 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="copyright">
+<section id="section-boilerplate.2">
+        <h2 id="name-copyright-notice">
+<a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
+        </h2>
+<p id="section-boilerplate.2-1">
+            Copyright (c) 2023 IETF Trust and the persons identified as the
+            document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.2-2">
+            This document is subject to BCP 78 and the IETF Trust's Legal
+            Provisions Relating to IETF Documents
+            (<span><a href="https://trustee.ietf.org/license-info">https://trustee.ietf.org/license-info</a></span>) in effect on the date of
+            publication of this document. Please review these documents
+            carefully, as they describe your rights and restrictions with
+            respect to this document. Code Components extracted from this
+            document must include Revised BSD License text as described in
+            Section 4.e of the Trust Legal Provisions and are provided without
+            warranty as described in the Revised BSD License.<a href="#section-boilerplate.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="toc">
+<section id="section-toc.1">
+        <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
+<a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
+        </h2>
+<nav class="toc"><ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
+            <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
+                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-constraints" class="internal xref">Constraints</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
+            <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-trust-anchor-management-for" class="internal xref">Trust anchor management for RATS</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
+                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-ta-and-ca-conveyance" class="internal xref">TA and CA conveyance</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1.2.1">
+                    <p id="section-toc.1-1.3.2.1.2.1.1"><a href="#section-3.1.1" class="auto internal xref">3.1.1</a>.  <a href="#name-the-concise-ta-stores-conta" class="internal xref">The concise-ta-stores Container</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1.2.2">
+                    <p id="section-toc.1-1.3.2.1.2.2.1"><a href="#section-3.1.2" class="auto internal xref">3.1.2</a>.  <a href="#name-the-concise-ta-store-map-co" class="internal xref">The concise-ta-store-map Container</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1.2.3">
+                    <p id="section-toc.1-1.3.2.1.2.3.1"><a href="#section-3.1.3" class="auto internal xref">3.1.3</a>.  <a href="#name-the-cas-and-tas-map-contain" class="internal xref">The cas-and-tas-map Container</a></p>
+</li>
+                </ul>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-environment-definition" class="internal xref">Environment definition</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2.2.1">
+                    <p id="section-toc.1-1.3.2.2.2.1.1"><a href="#section-3.2.1" class="auto internal xref">3.2.1</a>.  <a href="#name-the-environment-group-list-" class="internal xref">The <code>environment-group-list</code> Array</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2.2.2">
+                    <p id="section-toc.1-1.3.2.2.2.2.1"><a href="#section-3.2.2" class="auto internal xref">3.2.2</a>.  <a href="#name-the-abbreviated-swid-tag-ma" class="internal xref">The <code>abbreviated-swid-tag-map</code> Container</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2.2.3">
+                    <p id="section-toc.1-1.3.2.2.2.3.1"><a href="#section-3.2.3" class="auto internal xref">3.2.3</a>.  <a href="#name-the-named-ta-store-type" class="internal xref">The <code>named-ta-store</code> Type</a></p>
+</li>
+                </ul>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3">
+                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-constraints-definition" class="internal xref">Constraints definition</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3.2.1">
+                    <p id="section-toc.1-1.3.2.3.2.1.1"><a href="#section-3.3.1" class="auto internal xref">3.3.1</a>.  <a href="#name-the-tas-list-purpose-type" class="internal xref">The <code>$$tas-list-purpose</code> Type</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3.2.2">
+                    <p id="section-toc.1-1.3.2.3.2.2.1"><a href="#section-3.3.2" class="auto internal xref">3.3.2</a>.  <a href="#name-claims" class="internal xref">Claims</a></p>
+</li>
+                </ul>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4">
+                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-processing-a-concise-ta-sto" class="internal xref">Processing a <code>concise-ta-stores</code> RIM</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.5">
+                <p id="section-toc.1-1.3.2.5.1"><a href="#section-3.5" class="auto internal xref">3.5</a>.  <a href="#name-verifying-a-concise-ta-stor" class="internal xref">Verifying a concise-ta-stores RIM</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-cddl-definitions" class="internal xref">CDDL definitions</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-examples" class="internal xref">Examples</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
+                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-corim-cbor-tag-registration" class="internal xref">CoRIM CBOR Tag Registration</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-examples-base64-encodings" class="internal xref">Examples Base64 Encodings</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+</li>
+        </ul>
+</nav>
+</section>
+</div>
+<div id="introduction">
+<section id="section-1">
+      <h2 id="name-introduction">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
+      </h2>
+<p id="section-1-1">The RATS architecture <span>[<a href="#RFC9334" class="cite xref">RFC9334</a>]</span> uses the definition of a trust anchor from <span>[<a href="#RFC6024" class="cite xref">RFC6024</a>]</span>: "A trust anchor represents an authoritative entity via a public key and associated data.  The public key is used to verify digital signatures, and the associated data is used to constrain the types of information for which the trust anchor is authoritative." In the context of RATS, a trust anchor may be a public key or a symmetric key. This document focuses on trust anchors that are represented as public keys.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">The Concise Reference Integrity Manifest (CoRIM) <span>[<a href="#I-D.draft-ietf-rats-corim" class="cite xref">I-D.draft-ietf-rats-corim</a>]</span> specification defines a binary encoding for reference values and endorsmenents using the Concise Binary Object Representation (CBOR) <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span>. Amongst other information, a CoRIM may include key material for use in verifying evidence from an attesting environment (see Sections <a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-03#section-3.1.4.4" class="relref">3.1.4.4</a> and <a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-03#section-3.1.4.5" class="relref">3.1.4.5</a> of <span>[<a href="#I-D.draft-ietf-rats-corim" class="cite xref">I-D.draft-ietf-rats-corim</a>]</span>). The extension in this document aims to enable public key material to be decoupled from reference data and other kinds of endorsement data for several reasons, described below.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">Trust anchor (TA) and certification authority (CA) public keys may be less dynamic than the reference data that comprises much of a reference integrity manifest (RIM). For example, TA and CA lifetimes are typically fairly long while software versions change frequently. Conveying keys less frequently and indepedent from reference data enables a reduction in size of RIMs used to convey dynamic information and may result in a reduction in the size of aggregated data transferred to a verifier.  CoRIMs themselves are signed and some means of conveying CoRIM verification keys is required, though ultimately some out-of-band mechanism is required at least for bootstrapping purposes. Relying parties may verify attestations from both hardware and software sources and some trust anchors may be used to verify attestations from both hardware and software sources, as well. The verification information included in a CoRIM optionally includes a trust anchor, leaving trust anchor management to other mechanisms. Additionally, the CoRIM verification-map structure is tied to CoMIDs, leaving no simple means to convey verification information for CoSWIDs <span>[<a href="#RFC9393" class="cite xref">RFC9393</a>]</span>.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">This document defines means to decouple TAs and CAs from reference data and adds support for constraining the use of trust anchors, chiefly by limiting the environments to which a set of trust anchors is applicable. This constraints mechanism is similar to that in <span>[<a href="#fido-metadata" class="cite xref">fido-metadata</a>]</span> and <span>[<a href="#fido-service" class="cite xref">fido-service</a>]</span> and should align with existing attestation verification practices that tend to use per-vendor trust anchors. TA store instances may be further constrained using coarse-grained purpose values or a set of finer-grained permitted or excluded claims. The trust anchor formats supported by this draft allow for per-trust anchor constraints, if desired. Conveyance of trust anchors is the primary goal, CA certificates may optionally be included for convenience.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<div id="constraints">
+<section id="section-1.1">
+        <h3 id="name-constraints">
+<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-constraints" class="section-name selfRef">Constraints</a>
+        </h3>
+<p id="section-1.1-1">This document aims to support different PKI architectures including scenarios with various combinations of the following characteristics:<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-1.1-2.1">
+            <p id="section-1.1-2.1.1">TA stores that contain a TA or set of TAs from a single organization<a href="#section-1.1-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-1.1-2.2">
+            <p id="section-1.1-2.2.1">TA stores that contain a set of TAs from multiple organizations<a href="#section-1.1-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-1.1-2.3">
+            <p id="section-1.1-2.3.1">TAs that issue certificates to CAs within the same organiation as the TA<a href="#section-1.1-2.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-1.1-2.4">
+            <p id="section-1.1-2.4.1">TAs that issue certificates to CAs from multiple organizations<a href="#section-1.1-2.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-1.1-2.5">
+            <p id="section-1.1-2.5.1">CAs that issue certificates that may be used to verify attestations or certificates from the same organization as the TA and CA<a href="#section-1.1-2.5.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-1.1-2.6">
+            <p id="section-1.1-2.6.1">CAs that issue certificates that may be used to verify attestations or certificates from multiple organizations<a href="#section-1.1-2.6.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-1.1-3">Subsequent specifications may define extensions to express constraints as well as processing rules for evaluating constraints expressed in TA stores, TAs, CA certificates and end entity (EE) certificates. Support for constraints is intended to enable misissued certificates to be rejected at verification time. Any public key that can be used to verify a certificate is assumed to also support verification of revocation information, subject to applicable constraints defined by the revocation mechanism.<a href="#section-1.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="conventions-and-definitions">
+<section id="section-2">
+      <h2 id="name-conventions-and-definitions">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-conventions-and-definitions" class="section-name selfRef">Conventions and Definitions</a>
+      </h2>
+<p id="section-2-1">The key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>", "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">NOT RECOMMENDED</span>",
+"<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
+described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
+appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="trust-anchor-management-for-rats">
+<section id="section-3">
+      <h2 id="name-trust-anchor-management-for">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-trust-anchor-management-for" class="section-name selfRef">Trust anchor management for RATS</a>
+      </h2>
+<p id="section-3-1">Within RATS, trust anchors may be used to verify digital signatures for a variety of objects, including entity attestation tokens (EATs), CoRIMs, X.509 CA certificates (possibly containing endorsement information), X.509 EE certificates (possibly containing endorsement or attestation information), other attestation data, digital letters of approval <span>[<a href="#dloa" class="cite xref">dloa</a>]</span>, revocation information, etc. Depending on context, a raw public key may suffice or additional information may be required, such as subject name or subject public key identifier information found in an X.509 certificate. Trust anchors are usually aggregated into sets that are referred to as "trust anchor stores". Different trust anchor stores may serve different functional purposes.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-2">Historically, trust anchors and trust anchor stores are not constrained other than by the context(s) in which a trust anchor store is used. The path validation algorithm in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> only lists name, public key, public key algorithm and public key parameters as the elements of "trust anchor information". However, there are environments that do constrain trust anchor usage. The RPKI uses extensions from trust anchor certificates as defined in <span>[<a href="#RFC3779" class="cite xref">RFC3779</a>]</span>. FIDO provides a type of constraint by grouping attestation verification root certificates by authenticator model in <span>[<a href="#fido-metadata" class="cite xref">fido-metadata</a>]</span>.<a href="#section-3-2" class="pilcrow">¶</a></p>
+<p id="section-3-3">This document aims to support each of these types of models by allowing constrained or unconstrained trust anchors to be grouped by abstract purpose, i.e., similar to traditional trust anchor stores, or grouped by a set of constraints, such as vendor name.<a href="#section-3-3" class="pilcrow">¶</a></p>
+<div id="ta-and-ca-conveyance">
+<section id="section-3.1">
+        <h3 id="name-ta-and-ca-conveyance">
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-ta-and-ca-conveyance" class="section-name selfRef">TA and CA conveyance</a>
+        </h3>
+<p id="section-3.1-1">An unsigned concise TA stores object is a list of one or more TA stores, each represented below as a concise-ta-store-map element.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.1-2">
+<pre>
+concise-ta-stores
+  concise-ta-store-map #1
+  ...
+  concise-ta-store-map #n
+</pre><a href="#section-3.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-3.1-3">Each TA store instance identifies a target environment and features one or more public keys. Optional constraints on usage may be defined as well.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.1-4">
+<pre>
+concise-ta-store-map
+  language
+  store-identity
+  target environment
+  abstract coarse-grained constraints on TA store usage
+  concrete fine-grained constraints on TA store usage
+  public keys (possibly included per-instance constraints)
+</pre><a href="#section-3.1-4" class="pilcrow">¶</a>
+</div>
+<p id="section-3.1-5">The following sections define the structures to support the concepts shown above.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
+<div id="the-concise-ta-stores-container">
+<section id="section-3.1.1">
+          <h4 id="name-the-concise-ta-stores-conta">
+<a href="#section-3.1.1" class="section-number selfRef">3.1.1. </a><a href="#name-the-concise-ta-stores-conta" class="section-name selfRef">The concise-ta-stores Container</a>
+          </h4>
+<p id="section-3.1.1-1">The concise-ta-stores type is the root element for distrbuting sets of trust anchor stores. It contains one or more concise-ta-store-map elements where each element in the list identifies the environments for which a given set of trust anchors is applicable, along with any constraints.<a href="#section-3.1.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.1.1-2">
+<pre>
+concise-ta-stores = [+ concise-ta-store]
+</pre><a href="#section-3.1.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-3.1.1-3">The $concise-tag-type-choice <span>[<a href="#I-D.draft-ietf-rats-corim" class="cite xref">I-D.draft-ietf-rats-corim</a>]</span> is extended to include the concise-ta-stores structure. As shown in Section 4 of <span>[<a href="#I-D.draft-ietf-rats-corim" class="cite xref">I-D.draft-ietf-rats-corim</a>]</span>, the $concise-tag-type-choice type is used within the unsigned-corim-map structure, which is used within COSE-Sign1-corim structure. The COSE-Sign1-corim provides for integrity of the CoTS data. CoTS structures are not intended for use as stand-alone, unsigned structures. The signature on a CoTS instance <span class="bcp14">SHOULD</span> be verified using a TA associated with the cots <span><a href="#the-tas-list-purpose-type" class="internal xref">purpose</a> (<a href="#the-tas-list-purpose-type" class="auto internal xref">Section 3.3.1</a>)</span>.<a href="#section-3.1.1-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.1.1-4">
+<pre>
+$concise-tag-type-choice /= #6.TBD(bytes .cbor concise-ta-stores)
+</pre><a href="#section-3.1.1-4" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="the-concise-ta-store-map-container">
+<section id="section-3.1.2">
+          <h4 id="name-the-concise-ta-store-map-co">
+<a href="#section-3.1.2" class="section-number selfRef">3.1.2. </a><a href="#name-the-concise-ta-store-map-co" class="section-name selfRef">The concise-ta-store-map Container</a>
+          </h4>
+<p id="section-3.1.2-1">A <code>concise-ta-store-map</code> is a trust anchor store where the applicability of the store is established by the <code>tastore.environment</code> field with optional constraints on use of trust anchors found in the <code>tastore.keys</code> field defined by the <code>tastore.purpose</code>, <code>tastore.perm_claims</code> and <code>tastore.excl_claims</code> fields.<a href="#section-3.1.2-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.1.2-2">
+<pre>
+concise-ta-store-map = {
+ ? tastore.language =&gt; language-type
+ ? tastore.store-identity =&gt; tag-identity-map
+ tastore.environments =&gt; environment-group-list
+ ? tastore.purposes =&gt; [+ $$tas-list-purpose]
+ ? tastore.perm_claims =&gt; [+ $$claims-set-claims]
+ ? tastore.excl_claims =&gt; [+ $$claims-set-claims]
+ tastore.keys =&gt; cas-and-tas-map
+}
+
+; concise-ta-store-map indices
+tastore.language = 0
+tastore.store-identity = 1
+tastore.environment = 2
+tastore.purpose = 3
+tastore.perm_claims = 4
+tastore.excl_claims = 5
+tastore.keys = 6
+</pre><a href="#section-3.1.2-2" class="pilcrow">¶</a>
+</div>
+<p id="section-3.1.2-3">The following describes each member of the concise-ta-store-map.<a href="#section-3.1.2-3" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-3.1.2-4">
+            <dt id="section-3.1.2-4.1">
+<code>tastore.language</code>:</dt>
+            <dd style="margin-left: 1.5em" id="section-3.1.2-4.2">
+              <p id="section-3.1.2-4.2.1">A textual language tag that conforms with the IANA Language Subtag Registry <span>[<a href="#IANA.language-subtag-registry" class="cite xref">IANA.language-subtag-registry</a>]</span>.<a href="#section-3.1.2-4.2.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-3.1.2-4.3">
+<code>tastore.store-identity</code>:</dt>
+            <dd style="margin-left: 1.5em" id="section-3.1.2-4.4">
+              <p id="section-3.1.2-4.4.1">A composite identifier containing identifying attributes that enable global unique identification of a TA store instance across versions and facilitate linking from other artifacts. The <code>tag-identity-map</code> type is defined in <span>[<a href="#I-D.draft-ietf-rats-corim" class="cite xref">I-D.draft-ietf-rats-corim</a>]</span>.<a href="#section-3.1.2-4.4.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-3.1.2-4.5">
+<code>tastore.environment</code>:</dt>
+            <dd style="margin-left: 1.5em" id="section-3.1.2-4.6">
+              <p id="section-3.1.2-4.6.1">A list of environment definitions that limit the contexts for which the <code>tastore.keys</code> list is applicable. If the <code>tastore.environment</code> is empty, TAs in the <code>tastore.keys</code> list may be used for any environment.<a href="#section-3.1.2-4.6.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-3.1.2-4.7">
+<code>tastore.purpose</code>:</dt>
+            <dd style="margin-left: 1.5em" id="section-3.1.2-4.8">
+              <p id="section-3.1.2-4.8.1">Contains a list of <span><a href="#the-tas-list-purpose-type" class="internal xref">purposes</a> (<a href="#the-tas-list-purpose-type" class="auto internal xref">Section 3.3.1</a>)</span> for which the <code>tastore.keys</code> list may be used. When absent, TAs in the <code>tastore.keys</code> list may be used for any purpose. This field is simliar to the extendedKeyUsage extension defined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>. The initial list of purposes are: <code>cots</code>, <code>corim</code>, <code>comid</code>, <code>coswid</code>, <code>eat</code>, <code>key-attestation</code>, <code>certificate</code><a href="#section-3.1.2-4.8.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-3.1.2-4.9">
+<code>tastore.perm_claims</code>:</dt>
+            <dd style="margin-left: 1.5em" id="section-3.1.2-4.10">
+              <p id="section-3.1.2-4.10.1">Contains a list of <span><a href="#claims" class="internal xref">claim values</a> (<a href="#claims" class="auto internal xref">Section 3.3.2</a>)</span> <span>[<a href="#I-D.draft-ietf-rats-eat" class="cite xref">I-D.draft-ietf-rats-eat</a>]</span> for which <code>tastore.keys</code> list <span class="bcp14">MAY</span> be used to verify. When this field is absent, TAs in the <code>tastore.keys</code> list <span class="bcp14">MAY</span> be used to verify any claim subject to other restrictions.<a href="#section-3.1.2-4.10.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-3.1.2-4.11">
+<code>tastore.excl_claims</code>:</dt>
+            <dd style="margin-left: 1.5em" id="section-3.1.2-4.12">
+              <p id="section-3.1.2-4.12.1">Contains a list of <span><a href="#claims" class="internal xref">claim values</a> (<a href="#claims" class="auto internal xref">Section 3.3.2</a>)</span> <span>[<a href="#I-D.draft-ietf-rats-eat" class="cite xref">I-D.draft-ietf-rats-eat</a>]</span> for which <code>tastore.keys</code> list <span class="bcp14">MUST NOT</span> be used to verify. When this field is absent, TAs in the <code>tastore.keys</code> list may be used to verify any claim subject to other restrictions.<a href="#section-3.1.2-4.12.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-3.1.2-4.13">
+<code>tastore.keys</code>:</dt>
+            <dd style="margin-left: 1.5em" id="section-3.1.2-4.14">
+              <p id="section-3.1.2-4.14.1">Contains a list of one or more TAs and an optional list of one or more CA certificates.<a href="#section-3.1.2-4.14.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+</dl>
+<p id="section-3.1.2-5">The <code>perm_claims</code> and <code>excl_claims</code> constraints <span class="bcp14">MAY</span> alternatively be expressed as extensions in a TA or CA. Inclusion of support here is intended as an aid for environments that find CBOR encoding support more readily available than DER encoding support.<a href="#section-3.1.2-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="the-cas-and-tas-map-container">
+<section id="section-3.1.3">
+          <h4 id="name-the-cas-and-tas-map-contain">
+<a href="#section-3.1.3" class="section-number selfRef">3.1.3. </a><a href="#name-the-cas-and-tas-map-contain" class="section-name selfRef">The cas-and-tas-map Container</a>
+          </h4>
+<p id="section-3.1.3-1">The <code>cas-and-tas-map</code> container provides the means of representing trust anchors and, optionally, CA certificates.<a href="#section-3.1.3-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.1.3-2">
+<pre>
+trust-anchor = [
+  format =&gt; $pkix-ta-type
+  data =&gt; bstr
+]
+
+cas-and-tas-map = {
+ tastore.tas =&gt; [ + trust-anchor ]
+ ? tastore.cas =&gt; [ + pkix-cert-data ]
+}
+
+; cas-and-tas-map indices
+tastore.tas = 0
+tastore.cas = 1
+
+; format values
+$pkix-ta-type /= tastore.pkix-cert-type
+$pkix-ta-type /= tastore.pkix-tainfo-type
+$pkix-ta-type /= tastore.pkix-spki-type
+
+tastore.pkix-cert-type = 0
+tastore.pkix-tainfo-type = 1
+tastore.pkix-spki-type = 2
+
+; certificate type
+pkix-cert-data = bstr
+</pre><a href="#section-3.1.3-2" class="pilcrow">¶</a>
+</div>
+<p id="section-3.1.3-3">The <code>tastore.tas</code> element is used to convey one or more trust anchors and an optional set of one or more CA certificates. TAs are implicitly trusted, i.e., no verification is required prior to use. However, limitations on the use of the TA may be asserted in the corresponding <code>concise-ta-store-map</code> or within the TA itself. The <code>tastore.cas</code> field provides certificates that may be useful in the context where the corresponding <code>concise-ta-store-map</code> is used. These certificates are not implicitly trusted and <span class="bcp14">MUST</span> be validated to a trust anchor before use. End entity certificates <span class="bcp14">SHOULD NOT</span> appear in the tastore.cas list.<a href="#section-3.1.3-3" class="pilcrow">¶</a></p>
+<p id="section-3.1.3-4">The structure of the data contained in the data field of a trust-anchor is indicated by the format field. The <code>pkix-cert-type</code> is used to represent a binary, DER-encoded X.509 Certificate as defined in <span><a href="https://rfc-editor.org/rfc/rfc5280#section-4.1" class="relref">Section 4.1</a> of [<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>. The <code>pkix-key-type</code> is used to represent a binary, DER-encoded SubjectPublicKeyInfo as defined in <span><a href="https://rfc-editor.org/rfc/rfc5280#section-4.1" class="relref">Section 4.1</a> of [<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>. The <code>pkix-tainfo-type</code> is used to represent a binary, DER-encoded TrustAnchorInfo as defined in <span><a href="https://rfc-editor.org/rfc/rfc5914#section-2" class="relref">Section 2</a> of [<a href="#RFC5914" class="cite xref">RFC5914</a>]</span>.<a href="#section-3.1.3-4" class="pilcrow">¶</a></p>
+<p id="section-3.1.3-5">The <code>$pkix-ta-type</code> provides an extensible means for representing trust anchor information. It is defined here as supporting the <code>pkix-cert-type</code>, <code>pkix-spki-type</code> or <code>pkix-tainfo-type</code>. The <code>pkix-spki-type</code> may be used where only a raw pubilc key is necessary. The <code>pkix-cert-type</code> may be used for most purposes, including scenarios where a raw public key is sufficient and those where additional information from a certificate is required. The <code>pkix-tainfo-type</code> is included to support scenarios where constraints information is directly associated with a public key or certificate (vs. constraints for a TA set as provided by <code>tastore.purpose</code>, <code>tastore.perm_claims</code> and <code>tastore.excl_claims</code>).<a href="#section-3.1.3-5" class="pilcrow">¶</a></p>
+<p id="section-3.1.3-6">The <code>pkix-cert-data</code> type is used to represent a binary, DER-encoded X.509 Certificate.<a href="#section-3.1.3-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="environment-definition">
+<section id="section-3.2">
+        <h3 id="name-environment-definition">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-environment-definition" class="section-name selfRef">Environment definition</a>
+        </h3>
+<div id="the-environment-group-list-array">
+<section id="section-3.2.1">
+          <h4 id="name-the-environment-group-list-">
+<a href="#section-3.2.1" class="section-number selfRef">3.2.1. </a><a href="#name-the-environment-group-list-" class="section-name selfRef">The <code>environment-group-list</code> Array</a>
+          </h4>
+<p id="section-3.2.1-1">In CoRIM, "composite devices or systems are represented by a collection of Concise Module Identifiers (CoMID) and Concise Software Identifiers (CoSWID)". For trust anchor management purposes, targeting specific devices or systems may be too granular. For example, a trust anchor or set of trust anchors may apply to multiple device models or versions. The <code>environment-map</code> definition as used in a CoRIM is tightly bound to a CoMID. To allow for distribution of key material applicable to a specific or range of devices or software, the <code>envrionment-group-list</code> and <code>environment-group-map</code> are defined as below. These aim to enable use of coarse-grained naturally occurring values, like vendor, make, model, etc. to determine if a set of trust anchors is applicable to an environment.<a href="#section-3.2.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.2.1-2">
+<pre>
+environment-group-list = [* environment-group-list-map]
+
+environment-group-list-map = {
+  ? tastore.environment_map =&gt; environment-map,
+  ? tastore.concise_swid_tag =&gt; abbreviated-swid-tag,
+  ? tastore.named_ta_store =&gt; named-ta-store,
+}
+
+; environment-group-list-map indices
+tastore.environment_map = 0
+tastore.abbreviated_swid_tag = 1
+tastore.named_ta_store = 2
+
+</pre><a href="#section-3.2.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-3.2.1-3">An <code>environment-group-list</code> is a list of one or more <code>environment-group-list-map</code> elements that are used to determine if a given context is applicable. An empty list signifies all contexts <span class="bcp14">SHOULD</span> be considered as applicable.<a href="#section-3.2.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.2.1-4">An <code>environment-group-list-map</code> is one of <code>environment-map</code> <span>[<a href="#I-D.draft-ietf-rats-corim" class="cite xref">I-D.draft-ietf-rats-corim</a>]</span>, <span><a href="#the-abbreviated-swid-tag-map-container" class="internal xref"><code>abbreviated-swid-tag-map</code></a> (<a href="#the-abbreviated-swid-tag-map-container" class="auto internal xref">Section 3.2.2</a>)</span> or <span><a href="#the-named-ta-store-type" class="internal xref"><code>named-ta-store</code></a> (<a href="#the-named-ta-store-type" class="auto internal xref">Section 3.2.3</a>)</span>.<a href="#section-3.2.1-4" class="pilcrow">¶</a></p>
+<p id="section-3.2.1-5">As defined in <span>[<a href="#I-D.draft-ietf-rats-corim" class="cite xref">I-D.draft-ietf-rats-corim</a>]</span>, an <code>envirionment-map</code> may contain <code>class-map</code>, <code>$instance-id-type-choice</code>, <code>$group-id-type-choice</code>.<a href="#section-3.2.1-5" class="pilcrow">¶</a></p>
+<p id="section-3.2.1-6"><span class="cref" id="Q">QUESTION:</span> Should the above dispense with <code>environment-map</code> and <code>concise-swid-tag</code> and use or define some identity-focused structure with information common to both (possibly <code>class-map</code> from <span>[<a href="#I-D.draft-ietf-rats-corim" class="cite xref">I-D.draft-ietf-rats-corim</a>]</span>)? If not, should a more complete CoMID representation be used (instead of <code>environment-map</code>)?<a href="#section-3.2.1-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="the-abbreviated-swid-tag-map-container">
+<section id="section-3.2.2">
+          <h4 id="name-the-abbreviated-swid-tag-ma">
+<a href="#section-3.2.2" class="section-number selfRef">3.2.2. </a><a href="#name-the-abbreviated-swid-tag-ma" class="section-name selfRef">The <code>abbreviated-swid-tag-map</code> Container</a>
+          </h4>
+<p id="section-3.2.2-1">The <code>abbreviated-swid-tag-map</code> allows for expression of fields from a <code>concise-swid-tag</code> <span>[<a href="#RFC9393" class="cite xref">RFC9393</a>]</span> with all fields except entity designated as optional, compared to the <code>concise-swid-tag</code> definition that requires <code>tag-id</code>, <code>tag-version</code> and <code>software-name</code> to be present.<a href="#section-3.2.2-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.2.2-2">
+<pre>
+abbreviated-swid-tag-map = {
+  ? tag-id =&gt; text / bstr .size 16,
+  ? tag-version =&gt; integer,
+  ? corpus =&gt; bool,
+  ? patch =&gt; bool,
+  ? supplemental =&gt; bool,
+  ? software-name =&gt; text,
+  ? software-version =&gt; text,
+  ? version-scheme =&gt; $version-scheme,
+  ? media =&gt; text,
+  ? software-meta =&gt; one-or-more&lt;software-meta-entry&gt;,
+  entity =&gt; one-or-more&lt;entity-entry&gt;,
+  ? link =&gt; one-or-more&lt;link-entry&gt;,
+  ? payload-or-evidence,
+  * $$coswid-extension,
+  global-attributes,
+}
+</pre><a href="#section-3.2.2-2" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="the-named-ta-store-type">
+<section id="section-3.2.3">
+          <h4 id="name-the-named-ta-store-type">
+<a href="#section-3.2.3" class="section-number selfRef">3.2.3. </a><a href="#name-the-named-ta-store-type" class="section-name selfRef">The <code>named-ta-store</code> Type</a>
+          </h4>
+<p id="section-3.2.3-1">This specification allows for defining sets of trust anchors that are associated with an arbitrary name instead of relative to information typically expressed in a CoMID or CoSWID. Relying parties <span class="bcp14">MUST</span> be configured using the <code>named-ta-store</code> value to select a corresponding <code>concise-ta-store-map</code> for use.<a href="#section-3.2.3-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.2.3-2">
+<pre>
+named-ta-store = tstr
+</pre><a href="#section-3.2.3-2" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+</section>
+</div>
+<div id="constraints-definition">
+<section id="section-3.3">
+        <h3 id="name-constraints-definition">
+<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-constraints-definition" class="section-name selfRef">Constraints definition</a>
+        </h3>
+<div id="the-tas-list-purpose-type">
+<section id="section-3.3.1">
+          <h4 id="name-the-tas-list-purpose-type">
+<a href="#section-3.3.1" class="section-number selfRef">3.3.1. </a><a href="#name-the-tas-list-purpose-type" class="section-name selfRef">The <code>$$tas-list-purpose</code> Type</a>
+          </h4>
+<p id="section-3.3.1-1">The <code>$$tas-list-purpose</code> type provides an extensible means of expressions actions for which the corresponding keys are applicable. For example, trust anchors in a <code>concise-ta-store-map</code> with purpose field set to eat may not be used to verify certification paths. Extended key usage values corresponding to each purpose listed below (except for certificate) are defined in a companion specification.<a href="#section-3.3.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.3.1-2">
+<pre>
+$$tas-list-purpose /= "cots"
+$$tas-list-purpose /= "corim"
+$$tas-list-purpose /= "coswid"
+$$tas-list-purpose /= "eat"
+$$tas-list-purpose /= "key-attestation"
+$$tas-list-purpose /= "certificate"
+$$tas-list-purpose /= "dloa"
+</pre><a href="#section-3.3.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-3.3.1-3"><span class="cref" id="TODO">TODO:</span> Define verification targets for each purpose.<a href="#section-3.3.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.3.1-4"><span class="cref" id="Q_1">QUESTION:</span> Should this have a registry?<a href="#section-3.3.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="claims">
+<section id="section-3.3.2">
+          <h4 id="name-claims">
+<a href="#section-3.3.2" class="section-number selfRef">3.3.2. </a><a href="#name-claims" class="section-name selfRef">Claims</a>
+          </h4>
+<p id="section-3.3.2-1">A <code>concise-ta-store-map</code> may include lists of permitted and/or excluded claims <span>[<a href="#I-D.draft-ietf-rats-eat" class="cite xref">I-D.draft-ietf-rats-eat</a>]</span> that limit the applicability of trust anchors present in a <code>cas-and-tas-map</code>. A subsequent specification will define processing rules for evaluating constraints expressed in TA stores, TAs, CA certificates and end entity certificates.<a href="#section-3.3.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="processing-a-concise-ta-stores-rim">
+<section id="section-3.4">
+        <h3 id="name-processing-a-concise-ta-sto">
+<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-processing-a-concise-ta-sto" class="section-name selfRef">Processing a <code>concise-ta-stores</code> RIM</a>
+        </h3>
+<p id="section-3.4-1">When verifying a signature using a public key that chains back to a <code>concise-ta-stores</code> instance, elements in the <code>concise-ta-stores</code> array are processed beginning with the first element and proceeding until either a matching set is found that serves the desired purpose or no more elements are available. Each element is evaluated relative to the context, i.e., environment, purpose, artifact contents, etc.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
+<p id="section-3.4-2">For example, when verifying a CoRIM, each element in a triples-group <span class="bcp14">MUST</span> have an environment value that matches an <code>environment-group-list-map</code> element associated with the <code>concise-ta-store-map</code> containing the trust anchor used to verify the CoMID. Similarly, when verifying a CoSWID, the values in a <code>abbreviated-swid-tag</code> element from the <code>concise-ta-store-map</code> <span class="bcp14">MUST</span> match the CoSWID tag being verified. When verifying a certificate with DICE attestation extension, the information in each DiceTcbInfo element <span class="bcp14">MUST</span> be consistent with an <code>environment-group-list-map</code> associated with the <code>concise-ta-store-map</code>.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="verifying-a-concise-ta-stores-rim">
+<section id="section-3.5">
+        <h3 id="name-verifying-a-concise-ta-stor">
+<a href="#section-3.5" class="section-number selfRef">3.5. </a><a href="#name-verifying-a-concise-ta-stor" class="section-name selfRef">Verifying a concise-ta-stores RIM</a>
+        </h3>
+<p id="section-3.5-1"><span>[<a href="#I-D.draft-ietf-rats-corim" class="cite xref">I-D.draft-ietf-rats-corim</a>]</span> defers verification rules to <span>[<a href="#RFC8152" class="cite xref">RFC8152</a>]</span> and this document follows suit with the additional recommendation that the public key used to verify the RIM <span class="bcp14">SHOULD</span> be present in or chain to a public key present in a <code>concise-ta-store-map</code> with purpose set to <code>cots</code>.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="cddl-definitions">
+<section id="section-4">
+      <h2 id="name-cddl-definitions">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-cddl-definitions" class="section-name selfRef">CDDL definitions</a>
+      </h2>
+<p id="section-4-1">The CDDL definitions present in this document are provided below. Definitions from <span>[<a href="#I-D.draft-ietf-rats-corim" class="cite xref">I-D.draft-ietf-rats-corim</a>]</span> are not repeated here.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-4-2">
+<pre>
+concise-ta-stores = [+ concise-ta-store-map]
+$concise-tag-type-choice /= #6.TBD(bytes .cbor concise-ta-stores)
+
+concise-ta-store-map = {
+ ? tastore.language =&gt; language-type
+ ? tastore.store-identity =&gt; tag-identity-map
+ tastore.environments =&gt; environment-group-list
+ ? tastore.purposes =&gt; [+ $$tas-list-purpose]
+ ? tastore.perm_claims =&gt; [+ $$claims-set-claims]
+ ? tastore.excl_claims =&gt; [+ $$claims-set-claims]
+ tastore.keys =&gt; cas-and-tas-map
+}
+
+; concise-ta-store-map indices
+tastore.language = 0
+tastore.store-identity = 1
+tastore.environment = 2
+tastore.purpose = 3
+tastore.perm_claims = 4
+tastore.excl_claims = 5
+tastore.keys = 6
+
+trust-anchor = [
+  format =&gt; $pkix-ta-type
+  data =&gt; bstr
+]
+
+cas-and-tas-map = {
+ tastore.tas =&gt; [ + trust-anchor ]
+ ? tastore.cas =&gt; [ + pkix-cert-type ]
+}
+
+; cas-and-tas-map indices
+tastore.tas = 0
+tastore.cas = 1
+
+; format values
+$pkix-ta-type /= tastore.pkix-cert-type
+$pkix-ta-type /= tastore.pkix-tainfo-type
+$pkix-ta-type /= tastore.pkix-spki-type
+
+tastore.pkix-cert-type = 0
+tastore.pkix-tainfo-type = 1
+tastore.pkix-spki-type = 2
+
+; certificate type
+pkix-cert-data = bstr
+
+environment-group-list = [* environment-group-list-map]
+
+environment-group-list-map = {
+  ? environment-map =&gt; environment-map,
+  ? concise-swid-tag =&gt; abbreviated-swid-tag,
+  ? named-ta-store =&gt; named-ta-store,
+}
+
+abbreviated-swid-tag = {
+  ? tag-version =&gt; integer,
+  ? corpus =&gt; bool,
+  ? patch =&gt; bool,
+  ? supplemental =&gt; bool,
+  ? software-name =&gt; text,
+  ? software-version =&gt; text,
+  ? version-scheme =&gt; $version-scheme,
+  ? media =&gt; text,
+  ? software-meta =&gt; one-or-more&lt;software-meta-entry&gt;,
+  ? entity =&gt; one-or-more&lt;entity-entry&gt;,
+  ? link =&gt; one-or-more&lt;link-entry&gt;,
+  ? payload-or-evidence,
+  * $$coswid-extension,
+  global-attributes,
+}
+
+named-ta-store = tstr
+
+$tas-list-purpose /= "cots"
+$tas-list-purpose /= "corim"
+$tas-list-purpose /= "comid"
+$tas-list-purpose /= "coswid"
+$tas-list-purpose /= "eat"
+$tas-list-purpose /= "key-attestation"
+$tas-list-purpose /= "certificate"
+$tas-list-purpose /= "dloa"
+</pre><a href="#section-4-2" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="examples">
+<section id="section-5">
+      <h2 id="name-examples">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-examples" class="section-name selfRef">Examples</a>
+      </h2>
+<p id="section-5-1">The following examples are isolated <code>concise-ta-store-map</code> instances shown as JSON for ease of reading. The final example is an ASCII hex representation of a CBOR-encoded <code>concise-ta-stores</code> instance containing each example below (and using a placeholder value for the <code>concise-ta-stores</code> tag).<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-2">The TA store below contains a TA from a single organization ("Zesty Hands, Inc,") that is used to verify CoRIMs for that organization. Because this TA does not verify certificates, a bare public key is appropriate. It features a tag identity field containing a UUID for the tag identity and a version indication.<a href="#section-5-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5-3">
+<pre>
+{
+  "tag-identity": {
+    "id": "ab0f44b1-bfdc-4604-ab4a-30f80407ebcc",
+    "version": 5
+  },
+  "environments": [
+    {
+      "environment": {
+        "class": {
+          "vendor": "Worthless Sea, Inc."
+        }
+      }
+    }
+  ],
+  "keys": {
+    "tas": [
+      {
+        "format": 2,
+        "data":
+"MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAErYoMAdqe2gJT3CvCcifZxyE9+
+N8T6Jy5zbeo5LYtnOipmi1wXA9/gNtlwAbRCRQitH/GEcvUaGlzPZxIOITV/g=="
+      }
+    ]
+  }
+}
+</pre><a href="#section-5-3" class="pilcrow">¶</a>
+</div>
+<p id="section-5-4">The TA store below features three TAs from different organizations grouped as a TA store with the name "Miscellaneous TA Store". The first TA is an X.509 certificate. The second and third TAs are TrustAnchorInfo objects containing X.509 certificates. Though not shown in this example, constraints could be added to the TrustAnchorInfo elements, i.e., to restrict verification to attestations asserting a specific vendor name. It features a tag identity field containing a string as the tag identity with no version field present.<a href="#section-5-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5-5">
+<pre>
+{
+  "tag-identity": {
+    "id": "some_tag_identity"
+  },
+  "environments": [
+    {
+      "namedtastore": "Miscellaneous TA Store"
+    }
+  ],
+  "keys": {
+    "tas": [
+      {
+        "format": 0,
+        "data":
+        "
+MIIBvTCCAWSgAwIBAgIVANCdkL89UlzHc9Ui7XfVniK7pFuIMAoGCCqGSM49BAMCMD4
+xCzAJBgNVBAYMAlVTMRAwDgYDVQQKDAdFeGFtcGxlMR0wGwYDVQQDDBRFeGFtcGxlIF
+RydXN0IEFuY2hvcjAeFw0yMjA1MTkxNTEzMDdaFw0zMjA1MTYxNTEzMDdaMD4xCzAJB
+gNVBAYMAlVTMRAwDgYDVQQKDAdFeGFtcGxlMR0wGwYDVQQDDBRFeGFtcGxlIFRydXN0
+IEFuY2hvcjBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABONRqhA5JAekvQN8oLwRVND
+nAfBnTznLLE+SEGks677sHSeXfcVhZXUeDiN7/fsVNumaiEWRQpZh3zXPwL8rUMyjPz
+A9MB0GA1UdDgQWBBQBXEXJrLBGKnFd1xCgeMAVSfEBPzALBgNVHQ8EBAMCAoQwDwYDV
+R0TAQH/BAUwAwEB/zAKBggqhkjOPQQDAgNHADBEAiALBidABsfpzG0lTL9Eh9b6AUbq
+nzF+koEZbgvppvvt9QIgVoE+bhEN0j6wSPzePjLrEdD+PEgyjHJ5rbA11SPq/1M="
+      },
+      {
+        "format": 1,
+        "data":
+        "
+ooICtjCCArIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASXz21w12owQAx58euratY
+WiHEkhxDU9MEgetrvAtGYZxNnkfLCsp9vLcw8ISXC8tL97k9ZCUtnr0MzLw37XKRABB
+T22tHlEou/DenpU0Ozccb3/+fibjCCAj0wUjELMAkGA1UEBgwCVVMxGjAYBgNVBAoME
+Vplc3R5IEhhbmRzLCBJbmMuMScwJQYDVQQDDB5aZXN0eSBIYW5kcywgSW5jLiBUcnVz
+dCBBbmNob3KgggHlMIIBi6ADAgECAhQL3EqgUXlQPljyddVSRnNHvK+1MzAKBggqhkj
+OPQQDAjBSMQswCQYDVQQGDAJVUzEaMBgGA1UECgwRWmVzdHkgSGFuZHMsIEluYy4xJz
+AlBgNVBAMMHlplc3R5IEhhbmRzLCBJbmMuIFRydXN0IEFuY2hvcjAeFw0yMjA1MTkxN
+TEzMDdaFw0zMjA1MTYxNTEzMDdaMFIxCzAJBgNVBAYMAlVTMRowGAYDVQQKDBFaZXN0
+eSBIYW5kcywgSW5jLjEnMCUGA1UEAwweWmVzdHkgSGFuZHMsIEluYy4gVHJ1c3QgQW5
+jaG9yMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEl89tcNdqMEAMefHrq2rWFohxJI
+cQ1PTBIHra7wLRmGcTZ5HywrKfby3MPCElwvLS/e5PWQlLZ69DMy8N+1ykQKM/MD0wH
+QYDVR0OBBYEFPba0eUSi78N6elTQ7Nxxvf/5+JuMAsGA1UdDwQEAwIChDAPBgNVHRMB
+Af8EBTADAQH/MAoGCCqGSM49BAMCA0gAMEUCIB2li+f6RCxs2EnvNWciSpIDwiUViWa
+yGv1A8xks80eYAiEAmCez4KGrolFKOZT6bvqf1sYQuJBfvtk/y1JQdUvoqlg="
+      },
+      {
+        "format": 1,
+        "data":
+        "
+ooIC1TCCAtEwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAATN0f5kzywEzZOYbaV23O3
+N8cku39JoLNjlHPwECbXDDWp0LpAO1z248/hoy6UW/TZMTPPR/93XwHsG16mSFy8XBB
+SKhM/5gJWjvDbW7qUY1peNm9cfYDCCAlwwXDELMAkGA1UEBgwCVVMxHzAdBgNVBAoMF
+lNub2JiaXNoIEFwcGFyZWwsIEluYy4xLDAqBgNVBAMMI1Nub2JiaXNoIEFwcGFyZWws
+IEluYy4gVHJ1c3QgQW5jaG9yoIIB+jCCAZ+gAwIBAgIUEBuTRGXAEEVEHhu4xafAnqm
++qYgwCgYIKoZIzj0EAwIwXDELMAkGA1UEBgwCVVMxHzAdBgNVBAoMFlNub2JiaXNoIE
+FwcGFyZWwsIEluYy4xLDAqBgNVBAMMI1Nub2JiaXNoIEFwcGFyZWwsIEluYy4gVHJ1c
+3QgQW5jaG9yMB4XDTIyMDUxOTE1MTMwOFoXDTMyMDUxNjE1MTMwOFowXDELMAkGA1UE
+BgwCVVMxHzAdBgNVBAoMFlNub2JiaXNoIEFwcGFyZWwsIEluYy4xLDAqBgNVBAMMI1N
+ub2JiaXNoIEFwcGFyZWwsIEluYy4gVHJ1c3QgQW5jaG9yMFkwEwYHKoZIzj0CAQYIKo
+ZIzj0DAQcDQgAEzdH+ZM8sBM2TmG2ldtztzfHJLt/SaCzY5Rz8BAm1ww1qdC6QDtc9u
+PP4aMulFv02TEzz0f/d18B7BtepkhcvF6M/MD0wHQYDVR0OBBYEFIqEz/mAlaO8Ntbu
+pRjWl42b1x9gMAsGA1UdDwQEAwIChDAPBgNVHRMBAf8EBTADAQH/MAoGCCqGSM49BAM
+CA0kAMEYCIQC2cf43f3PPlCO6/dxv40ftIgxxToKHF72UzENv7+y4ygIhAIGtC/r6SG
+aFMaP7zD2EloBuIXTtyWu8Hwl+YGdXRY93"
+      }
+    ]
+  }
+}
+</pre><a href="#section-5-5" class="pilcrow">¶</a>
+</div>
+<p id="section-5-6">The TA Store below features one TA with an environment targeting CoSWIDs with entity named "Zesty Hands, Inc," and one permitted EAT claim for software named "Bitter Paper".<a href="#section-5-6" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5-7">
+<pre>
+{
+  "environments": [
+    {
+      "swidtag": {
+        "entity": [
+          {
+            "entity-name": "Zesty Hands, Inc.",
+            "role": "softwareCreator"
+          }
+        ]
+      }
+    }
+  ],
+  "permclaims": [
+    {
+      "swname": "Bitter Paper"
+    }
+  ],
+  "keys": {
+    "tas": [
+      {
+        "format": 0,
+        "data":
+        "
+MIIB5TCCAYugAwIBAgIUC9xKoFF5UD5Y8nXVUkZzR7yvtTMwCgYIKoZIzj0EAwI
+wUjELMAkGA1UEBgwCVVMxGjAYBgNVBAoMEVplc3R5IEhhbmRzLCBJbmMuMScwJQ
+YDVQQDDB5aZXN0eSBIYW5kcywgSW5jLiBUcnVzdCBBbmNob3IwHhcNMjIwNTE5M
+TUxMzA3WhcNMzIwNTE2MTUxMzA3WjBSMQswCQYDVQQGDAJVUzEaMBgGA1UECgwR
+WmVzdHkgSGFuZHMsIEluYy4xJzAlBgNVBAMMHlplc3R5IEhhbmRzLCBJbmMuIFR
+ydXN0IEFuY2hvcjBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJfPbXDXajBADH
+nx66tq1haIcSSHENT0wSB62u8C0ZhnE2eR8sKyn28tzDwhJcLy0v3uT1kJS2evQ
+zMvDftcpECjPzA9MB0GA1UdDgQWBBT22tHlEou/DenpU0Ozccb3/+fibjALBgNV
+HQ8EBAMCAoQwDwYDVR0TAQH/BAUwAwEB/zAKBggqhkjOPQQDAgNIADBFAiAdpYv
+n+kQsbNhJ7zVnIkqSA8IlFYlmshr9QPMZLPNHmAIhAJgns+Chq6JRSjmU+m76n9
+bGELiQX77ZP8tSUHVL6KpY"
+      }
+    ]
+  }
+}
+</pre><a href="#section-5-7" class="pilcrow">¶</a>
+</div>
+<p id="section-5-8">The dump below shows the COSE-Sign1-corim contents from the ASCII hex above. A full base64-encoded version of this example is given in <a href="#b64-examples" class="auto internal xref">Appendix A</a><a href="#section-5-8" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5-9">
+<pre>
+18([h'
+A3012603746170706C69636174696F6E2F72696D2B63626F72085841A200A20
+07441434D45204C7464207369676E696E67206B657901D8207468747470733A
+2F2F61636D652E6578616D706C6501A200C11A61CE480001C11A69546780',
+{},
+h'
+A30050EBA916FB1E3E42679214E07E1A9BF9130181590A56D901FB83A301A20
+050FB51FAC913C546C39390DC306B167F5A01050281A101A100A10173576F72
+74686C657373205365612C20496E632E06A100818202585B3059301306072A8
+648CE3D020106082A8648CE3D03010703420004AD8A0C01DA9EDA0253DC2BC2
+7227D9C7213DF8DF13E89CB9CDB7A8E4B62D9CE8A99A2D705C0F7F80DB65C00
+6D1091422B47FC611CBD46869733D9C483884D5FEA301A10071736F6D655F74
+61675F6964656E746974790281A103764D697363656C6C616E656F757320544
+12053746F726506A1008382005901C1308201BD30820164A003020102021500
+D09D90BF3D525CC773D522ED77D59E22BBA45B88300A06082A8648CE3D04030
+2303E310B300906035504060C0255533110300E060355040A0C074578616D70
+6C65311D301B06035504030C144578616D706C6520547275737420416E63686
+F72301E170D3232303531393135313330375A170D3332303531363135313330
+375A303E310B300906035504060C0255533110300E060355040A0C074578616
+D706C65311D301B06035504030C144578616D706C6520547275737420416E63
+686F723059301306072A8648CE3D020106082A8648CE3D03010703420004E35
+1AA10392407A4BD037CA0BC1154D0E701F0674F39CB2C4F9210692CEBBEEC1D
+27977DC56165751E0E237BFDFB1536E99A884591429661DF35CFC0BF2B50CCA
+33F303D301D0603551D0E04160414015C45C9ACB0462A715DD710A078C01549
+F1013F300B0603551D0F040403020284300F0603551D130101FF04053003010
+1FF300A06082A8648CE3D040302034700304402200B06274006C7E9CC6D254C
+BF4487D6FA0146EA9F317E9281196E0BE9A6FBEDF5022056813E6E110DD23EB
+048FCDE3E32EB11D0FE3C48328C7279ADB035D523EAFF5382015902BAA28202
+B6308202B23059301306072A8648CE3D020106082A8648CE3D0301070342000
+497CF6D70D76A30400C79F1EBAB6AD6168871248710D4F4C1207ADAEF02D198
+67136791F2C2B29F6F2DCC3C2125C2F2D2FDEE4F59094B67AF43332F0DFB5CA
+4400414F6DAD1E5128BBF0DE9E95343B371C6F7FFE7E26E3082023D3052310B
+300906035504060C025553311A3018060355040A0C115A657374792048616E6
+4732C20496E632E3127302506035504030C1E5A657374792048616E64732C20
+496E632E20547275737420416E63686F72A08201E53082018BA003020102021
+40BDC4AA05179503E58F275D552467347BCAFB533300A06082A8648CE3D0403
+023052310B300906035504060C025553311A3018060355040A0C115A6573747
+92048616E64732C20496E632E3127302506035504030C1E5A65737479204861
+6E64732C20496E632E20547275737420416E63686F72301E170D32323035313
+93135313330375A170D3332303531363135313330375A3052310B3009060355
+04060C025553311A3018060355040A0C115A657374792048616E64732C20496
+E632E3127302506035504030C1E5A657374792048616E64732C20496E632E20
+547275737420416E63686F723059301306072A8648CE3D020106082A8648CE3
+D0301070342000497CF6D70D76A30400C79F1EBAB6AD6168871248710D4F4C1
+207ADAEF02D19867136791F2C2B29F6F2DCC3C2125C2F2D2FDEE4F59094B67A
+F43332F0DFB5CA440A33F303D301D0603551D0E04160414F6DAD1E5128BBF0D
+E9E95343B371C6F7FFE7E26E300B0603551D0F040403020284300F0603551D1
+30101FF040530030101FF300A06082A8648CE3D040302034800304502201DA5
+8BE7FA442C6CD849EF3567224A9203C225158966B21AFD40F3192CF34798022
+1009827B3E0A1ABA2514A3994FA6EFA9FD6C610B8905FBED93FCB5250754BE8
+AA5882015902D9A28202D5308202D13059301306072A8648CE3D020106082A8
+648CE3D03010703420004CDD1FE64CF2C04CD93986DA576DCEDCDF1C92EDFD2
+682CD8E51CFC0409B5C30D6A742E900ED73DB8F3F868CBA516FD364C4CF3D1F
+FDDD7C07B06D7A992172F1704148A84CFF98095A3BC36D6EEA518D6978D9BD7
+1F603082025C305C310B300906035504060C025553311F301D060355040A0C1
+6536E6F6262697368204170706172656C2C20496E632E312C302A0603550403
+0C23536E6F6262697368204170706172656C2C20496E632E205472757374204
+16E63686F72A08201FA3082019FA0030201020214101B934465C01045441E1B
+B8C5A7C09EA9BEA988300A06082A8648CE3D040302305C310B3009060355040
+60C025553311F301D060355040A0C16536E6F6262697368204170706172656C
+2C20496E632E312C302A06035504030C23536E6F62626973682041707061726
+56C2C20496E632E20547275737420416E63686F72301E170D32323035313931
+35313330385A170D3332303531363135313330385A305C310B3009060355040
+60C025553311F301D060355040A0C16536E6F6262697368204170706172656C
+2C20496E632E312C302A06035504030C23536E6F62626973682041707061726
+56C2C20496E632E20547275737420416E63686F723059301306072A8648CE3D
+020106082A8648CE3D03010703420004CDD1FE64CF2C04CD93986DA576DCEDC
+DF1C92EDFD2682CD8E51CFC0409B5C30D6A742E900ED73DB8F3F868CBA516FD
+364C4CF3D1FFDDD7C07B06D7A992172F17A33F303D301D0603551D0E0416041
+48A84CFF98095A3BC36D6EEA518D6978D9BD71F60300B0603551D0F04040302
+0284300F0603551D130101FF040530030101FF300A06082A8648CE3D0403020
+349003046022100B671FE377F73CF9423BAFDDC6FE347ED220C714E828717BD
+94CC436FEFECB8CA02210081AD0BFAFA48668531A3FBCC3D8496806E2174EDC
+96BBC1F097E606757458F77A30281A102A102A2181F715A657374792048616E
+64732C20496E632E1821020481A11903E66C42697474657220506170657206A
+1008182005901E9308201E53082018BA00302010202140BDC4AA05179503E58
+F275D552467347BCAFB533300A06082A8648CE3D0403023052310B300906035
+504060C025553311A3018060355040A0C115A657374792048616E64732C2049
+6E632E3127302506035504030C1E5A657374792048616E64732C20496E632E2
+0547275737420416E63686F72301E170D3232303531393135313330375A170D
+3332303531363135313330375A3052310B300906035504060C025553311A301
+8060355040A0C115A657374792048616E64732C20496E632E31273025060355
+04030C1E5A657374792048616E64732C20496E632E20547275737420416E636
+86F723059301306072A8648CE3D020106082A8648CE3D0301070342000497CF
+6D70D76A30400C79F1EBAB6AD6168871248710D4F4C1207ADAEF02D19867136
+791F2C2B29F6F2DCC3C2125C2F2D2FDEE4F59094B67AF43332F0DFB5CA440A3
+3F303D301D0603551D0E04160414F6DAD1E5128BBF0DE9E95343B371C6F7FFE
+7E26E300B0603551D0F040403020284300F0603551D130101FF040530030101
+FF300A06082A8648CE3D040302034800304502201DA58BE7FA442C6CD849EF3
+567224A9203C225158966B21AFD40F3192CF347980221009827B3E0A1ABA251
+4A3994FA6EFA9FD6C610B8905FBED93FCB5250754BE8AA5804A200C11A61CE4
+80001C11A69546780',
+h'
+19E82D7A5C7A73B44F06305AECF0EF8CF8764286323F6D2BA27D7291F92FF5B
+0CF789F6FF88B7E2EE8EF262B4FA1DFD7D7AFB0AE2C0062C98DB332243B3E99
+94'])
+</pre><a href="#section-5-9" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="security-considerations">
+<section id="section-6">
+      <h2 id="name-security-considerations">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+      </h2>
+<p id="section-6-1">As a profile of CoRIM, the security considerations from <span>[<a href="#I-D.draft-ietf-rats-corim" class="cite xref">I-D.draft-ietf-rats-corim</a>]</span> apply.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">As a means of managing trust anchors, the security considerations from <span>[<a href="#RFC6024" class="cite xref">RFC6024</a>]</span> and <span>[<a href="#RFC5934" class="cite xref">RFC5934</a>]</span> apply. a CoTS signer is roughly analogous to a "management trust anchor" as described in <span>[<a href="#RFC5934" class="cite xref">RFC5934</a>]</span>.<a href="#section-6-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="iana-considerations">
+<section id="section-7">
+      <h2 id="name-iana-considerations">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+      </h2>
+<div id="corim-cbor-tag-registration">
+<section id="section-7.1">
+        <h3 id="name-corim-cbor-tag-registration">
+<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-corim-cbor-tag-registration" class="section-name selfRef">CoRIM CBOR Tag Registration</a>
+        </h3>
+<p id="section-7.1-1">IANA is requested to allocate tags in the "CBOR Tags" registry <span>[<a href="#IANA.cbor-tags" class="cite xref">IANA.cbor-tags</a>]</span>, preferably with the specific value requested:<a href="#section-7.1-1" class="pilcrow">¶</a></p>
+<table class="center" id="table-1">
+          <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Tag</th>
+              <th class="text-left" rowspan="1" colspan="1">Data Item</th>
+              <th class="text-left" rowspan="1" colspan="1">Semantics</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">507</td>
+              <td class="text-left" rowspan="1" colspan="1">tagged array</td>
+              <td class="text-left" rowspan="1" colspan="1">Concise Trust Anchor Stores (CoTS)</td>
+            </tr>
+          </tbody>
+        </table>
+</section>
+</div>
+</section>
+</div>
+<section id="section-8">
+      <h2 id="name-references">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-references" class="section-name selfRef">References</a>
+      </h2>
+<div id="sec-normative-references">
+<section id="section-8.1">
+        <h3 id="name-normative-references">
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+        </h3>
+<dl class="references">
+<dt id="I-D.draft-ietf-rats-corim">[I-D.draft-ietf-rats-corim]</dt>
+        <dd>
+<span class="refAuthor">Birkholz, H.</span>, <span class="refAuthor">Fossati, T.</span>, <span class="refAuthor">Deshpande, Y.</span>, <span class="refAuthor">Smith, N.</span>, and <span class="refAuthor">W. Pan</span>, <span class="refTitle">"Concise Reference Integrity Manifest"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-rats-corim-03</span>, <time datetime="2023-10-23" class="refDate">23 October 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-03">https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-03</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.draft-ietf-rats-eat">[I-D.draft-ietf-rats-eat]</dt>
+        <dd>
+<span class="refAuthor">Lundblade, L.</span>, <span class="refAuthor">Mandyam, G.</span>, <span class="refAuthor">O'Donoghue, J.</span>, and <span class="refAuthor">C. Wallace</span>, <span class="refTitle">"The Entity Attestation Token (EAT)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-rats-eat-22</span>, <time datetime="2023-10-14" class="refDate">14 October 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-eat-22">https://datatracker.ietf.org/doc/html/draft-ietf-rats-eat-22</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="IANA.cbor-tags">[IANA.cbor-tags]</dt>
+        <dd>
+<span class="refAuthor">IANA</span>, <span class="refTitle">"Concise Binary Object Representation (CBOR) Tags"</span>, <span>&lt;<a href="http://www.iana.org/assignments/cbor-tags">http://www.iana.org/assignments/cbor-tags</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="IANA.language-subtag-registry">[IANA.language-subtag-registry]</dt>
+        <dd>
+<span class="refAuthor">IANA</span>, <span class="refTitle">"Language Subtag Registry"</span>, <span>&lt;<a href="http://www.iana.org/assignments/language-subtag-registry">http://www.iana.org/assignments/language-subtag-registry</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC2119">[RFC2119]</dt>
+        <dd>
+<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5280">[RFC5280]</dt>
+        <dd>
+<span class="refAuthor">Cooper, D.</span>, <span class="refAuthor">Santesson, S.</span>, <span class="refAuthor">Farrell, S.</span>, <span class="refAuthor">Boeyen, S.</span>, <span class="refAuthor">Housley, R.</span>, and <span class="refAuthor">W. Polk</span>, <span class="refTitle">"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile"</span>, <span class="seriesInfo">RFC 5280</span>, <span class="seriesInfo">DOI 10.17487/RFC5280</span>, <time datetime="2008-05" class="refDate">May 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5280">https://www.rfc-editor.org/rfc/rfc5280</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5914">[RFC5914]</dt>
+        <dd>
+<span class="refAuthor">Housley, R.</span>, <span class="refAuthor">Ashmore, S.</span>, and <span class="refAuthor">C. Wallace</span>, <span class="refTitle">"Trust Anchor Format"</span>, <span class="seriesInfo">RFC 5914</span>, <span class="seriesInfo">DOI 10.17487/RFC5914</span>, <time datetime="2010-06" class="refDate">June 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5914">https://www.rfc-editor.org/rfc/rfc5914</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8174">[RFC8174]</dt>
+        <dd>
+<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8949">[RFC8949]</dt>
+        <dd>
+<span class="refAuthor">Bormann, C.</span> and <span class="refAuthor">P. Hoffman</span>, <span class="refTitle">"Concise Binary Object Representation (CBOR)"</span>, <span class="seriesInfo">STD 94</span>, <span class="seriesInfo">RFC 8949</span>, <span class="seriesInfo">DOI 10.17487/RFC8949</span>, <time datetime="2020-12" class="refDate">December 2020</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8949">https://www.rfc-editor.org/rfc/rfc8949</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9393">[RFC9393]</dt>
+      <dd>
+<span class="refAuthor">Birkholz, H.</span>, <span class="refAuthor">Fitzgerald-McKay, J.</span>, <span class="refAuthor">Schmidt, C.</span>, and <span class="refAuthor">D. Waltermire</span>, <span class="refTitle">"Concise Software Identification Tags"</span>, <span class="seriesInfo">RFC 9393</span>, <span class="seriesInfo">DOI 10.17487/RFC9393</span>, <time datetime="2023-06" class="refDate">June 2023</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9393">https://www.rfc-editor.org/rfc/rfc9393</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="sec-informative-references">
+<section id="section-8.2">
+        <h3 id="name-informative-references">
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+        </h3>
+<dl class="references">
+<dt id="dloa">[dloa]</dt>
+        <dd>
+<span class="refAuthor">GlobalPlatform</span>, <span class="refTitle">"GlobalPlatform Card - Digital Letter of Approval Version 1.0"</span>, <time datetime="2015-11" class="refDate">November 2015</time>, <span>&lt;<a href="https://globalplatform.org/wp-content/uploads/2015/12/GPC_DigitalLetterOfApproval_v1.0.pdf">https://globalplatform.org/wp-content/uploads/2015/12/GPC_DigitalLetterOfApproval_v1.0.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="fido-metadata">[fido-metadata]</dt>
+        <dd>
+<span class="refAuthor">FIDO Alliance</span>, <span class="refTitle">"FIDO Metadata Statement"</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://fidoalliance.org/specs/mds/fido-metadata-statement-v3.0-ps-20210518.html">https://fidoalliance.org/specs/mds/fido-metadata-statement-v3.0-ps-20210518.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="fido-service">[fido-service]</dt>
+        <dd>
+<span class="refAuthor">FIDO Alliance</span>, <span class="refTitle">"FIDO Metadata Service"</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://fidoalliance.org/specs/mds/fido-metadata-service-v3.0-ps-20210518.html">https://fidoalliance.org/specs/mds/fido-metadata-service-v3.0-ps-20210518.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC3779">[RFC3779]</dt>
+        <dd>
+<span class="refAuthor">Lynn, C.</span>, <span class="refAuthor">Kent, S.</span>, and <span class="refAuthor">K. Seo</span>, <span class="refTitle">"X.509 Extensions for IP Addresses and AS Identifiers"</span>, <span class="seriesInfo">RFC 3779</span>, <span class="seriesInfo">DOI 10.17487/RFC3779</span>, <time datetime="2004-06" class="refDate">June 2004</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc3779">https://www.rfc-editor.org/rfc/rfc3779</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5934">[RFC5934]</dt>
+        <dd>
+<span class="refAuthor">Housley, R.</span>, <span class="refAuthor">Ashmore, S.</span>, and <span class="refAuthor">C. Wallace</span>, <span class="refTitle">"Trust Anchor Management Protocol (TAMP)"</span>, <span class="seriesInfo">RFC 5934</span>, <span class="seriesInfo">DOI 10.17487/RFC5934</span>, <time datetime="2010-08" class="refDate">August 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5934">https://www.rfc-editor.org/rfc/rfc5934</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6024">[RFC6024]</dt>
+        <dd>
+<span class="refAuthor">Reddy, R.</span> and <span class="refAuthor">C. Wallace</span>, <span class="refTitle">"Trust Anchor Management Requirements"</span>, <span class="seriesInfo">RFC 6024</span>, <span class="seriesInfo">DOI 10.17487/RFC6024</span>, <time datetime="2010-10" class="refDate">October 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6024">https://www.rfc-editor.org/rfc/rfc6024</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8152">[RFC8152]</dt>
+        <dd>
+<span class="refAuthor">Schaad, J.</span>, <span class="refTitle">"CBOR Object Signing and Encryption (COSE)"</span>, <span class="seriesInfo">RFC 8152</span>, <span class="seriesInfo">DOI 10.17487/RFC8152</span>, <time datetime="2017-07" class="refDate">July 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8152">https://www.rfc-editor.org/rfc/rfc8152</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9334">[RFC9334]</dt>
+      <dd>
+<span class="refAuthor">Birkholz, H.</span>, <span class="refAuthor">Thaler, D.</span>, <span class="refAuthor">Richardson, M.</span>, <span class="refAuthor">Smith, N.</span>, and <span class="refAuthor">W. Pan</span>, <span class="refTitle">"Remote ATtestation procedureS (RATS) Architecture"</span>, <span class="seriesInfo">RFC 9334</span>, <span class="seriesInfo">DOI 10.17487/RFC9334</span>, <time datetime="2023-01" class="refDate">January 2023</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9334">https://www.rfc-editor.org/rfc/rfc9334</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
+</section>
+<div id="b64-examples">
+<section id="appendix-A">
+      <h2 id="name-examples-base64-encodings">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-examples-base64-encodings" class="section-name selfRef">Examples Base64 Encodings</a>
+      </h2>
+<p id="appendix-A-1">The base64 encoded data below represents a signed CoRIM that features a <code>concise-ta-stores</code> containing the three examples shown above.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-A-2">
+<pre>
+0oRYXaMBJgN0YXBwbGljYXRpb24vcmltK2Nib3IIWEGiAKIAdEFDTUUgTHRkIHN
+pZ25pbmcga2V5AdggdGh0dHBzOi8vYWNtZS5leGFtcGxlAaIAwRphzkgAAcEaaV
+RngKBZCn6jAFDrqRb7Hj5CZ5IU4H4am/kTAYFZClbZAfuDowGiAFD7UfrJE8VGw
+5OQ3DBrFn9aAQUCgaEBoQChAXNXb3J0aGxlc3MgU2VhLCBJbmMuBqEAgYICWFsw
+WTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAStigwB2p7aAlPcK8JyJ9nHIT343xP
+onLnNt6jkti2c6KmaLXBcD3+A22XABtEJFCK0f8YRy9RoaXM9nEg4hNX+owGhAH
+Fzb21lX3RhZ19pZGVudGl0eQKBoQN2TWlzY2VsbGFuZW91cyBUQSBTdG9yZQahA
+IOCAFkBwTCCAb0wggFkoAMCAQICFQDQnZC/PVJcx3PVIu131Z4iu6RbiDAKBggq
+hkjOPQQDAjA+MQswCQYDVQQGDAJVUzEQMA4GA1UECgwHRXhhbXBsZTEdMBsGA1U
+EAwwURXhhbXBsZSBUcnVzdCBBbmNob3IwHhcNMjIwNTE5MTUxMzA3WhcNMzIwNT
+E2MTUxMzA3WjA+MQswCQYDVQQGDAJVUzEQMA4GA1UECgwHRXhhbXBsZTEdMBsGA
+1UEAwwURXhhbXBsZSBUcnVzdCBBbmNob3IwWTATBgcqhkjOPQIBBggqhkjOPQMB
+BwNCAATjUaoQOSQHpL0DfKC8EVTQ5wHwZ085yyxPkhBpLOu+7B0nl33FYWV1Hg4
+je/37FTbpmohFkUKWYd81z8C/K1DMoz8wPTAdBgNVHQ4EFgQUAVxFyaywRipxXd
+cQoHjAFUnxAT8wCwYDVR0PBAQDAgKEMA8GA1UdEwEB/wQFMAMBAf8wCgYIKoZIz
+j0EAwIDRwAwRAIgCwYnQAbH6cxtJUy/RIfW+gFG6p8xfpKBGW4L6ab77fUCIFaB
+Pm4RDdI+sEj83j4y6xHQ/jxIMoxyea2wNdUj6v9TggFZArqiggK2MIICsjBZMBM
+GByqGSM49AgEGCCqGSM49AwEHA0IABJfPbXDXajBADHnx66tq1haIcSSHENT0wS
+B62u8C0ZhnE2eR8sKyn28tzDwhJcLy0v3uT1kJS2evQzMvDftcpEAEFPba0eUSi
+78N6elTQ7Nxxvf/5+JuMIICPTBSMQswCQYDVQQGDAJVUzEaMBgGA1UECgwRWmVz
+dHkgSGFuZHMsIEluYy4xJzAlBgNVBAMMHlplc3R5IEhhbmRzLCBJbmMuIFRydXN
+0IEFuY2hvcqCCAeUwggGLoAMCAQICFAvcSqBReVA+WPJ11VJGc0e8r7UzMAoGCC
+qGSM49BAMCMFIxCzAJBgNVBAYMAlVTMRowGAYDVQQKDBFaZXN0eSBIYW5kcywgS
+W5jLjEnMCUGA1UEAwweWmVzdHkgSGFuZHMsIEluYy4gVHJ1c3QgQW5jaG9yMB4X
+DTIyMDUxOTE1MTMwN1oXDTMyMDUxNjE1MTMwN1owUjELMAkGA1UEBgwCVVMxGjA
+YBgNVBAoMEVplc3R5IEhhbmRzLCBJbmMuMScwJQYDVQQDDB5aZXN0eSBIYW5kcy
+wgSW5jLiBUcnVzdCBBbmNob3IwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASXz
+21w12owQAx58euratYWiHEkhxDU9MEgetrvAtGYZxNnkfLCsp9vLcw8ISXC8tL9
+7k9ZCUtnr0MzLw37XKRAoz8wPTAdBgNVHQ4EFgQU9trR5RKLvw3p6VNDs3HG9//
+n4m4wCwYDVR0PBAQDAgKEMA8GA1UdEwEB/wQFMAMBAf8wCgYIKoZIzj0EAwIDSA
+AwRQIgHaWL5/pELGzYSe81ZyJKkgPCJRWJZrIa/UDzGSzzR5gCIQCYJ7PgoauiU
+Uo5lPpu+p/WxhC4kF++2T/LUlB1S+iqWIIBWQLZooIC1TCCAtEwWTATBgcqhkjO
+PQIBBggqhkjOPQMBBwNCAATN0f5kzywEzZOYbaV23O3N8cku39JoLNjlHPwECbX
+DDWp0LpAO1z248/hoy6UW/TZMTPPR/93XwHsG16mSFy8XBBSKhM/5gJWjvDbW7q
+UY1peNm9cfYDCCAlwwXDELMAkGA1UEBgwCVVMxHzAdBgNVBAoMFlNub2JiaXNoI
+EFwcGFyZWwsIEluYy4xLDAqBgNVBAMMI1Nub2JiaXNoIEFwcGFyZWwsIEluYy4g
+VHJ1c3QgQW5jaG9yoIIB+jCCAZ+gAwIBAgIUEBuTRGXAEEVEHhu4xafAnqm+qYg
+wCgYIKoZIzj0EAwIwXDELMAkGA1UEBgwCVVMxHzAdBgNVBAoMFlNub2JiaXNoIE
+FwcGFyZWwsIEluYy4xLDAqBgNVBAMMI1Nub2JiaXNoIEFwcGFyZWwsIEluYy4gV
+HJ1c3QgQW5jaG9yMB4XDTIyMDUxOTE1MTMwOFoXDTMyMDUxNjE1MTMwOFowXDEL
+MAkGA1UEBgwCVVMxHzAdBgNVBAoMFlNub2JiaXNoIEFwcGFyZWwsIEluYy4xLDA
+qBgNVBAMMI1Nub2JiaXNoIEFwcGFyZWwsIEluYy4gVHJ1c3QgQW5jaG9yMFkwEw
+YHKoZIzj0CAQYIKoZIzj0DAQcDQgAEzdH+ZM8sBM2TmG2ldtztzfHJLt/SaCzY5
+Rz8BAm1ww1qdC6QDtc9uPP4aMulFv02TEzz0f/d18B7BtepkhcvF6M/MD0wHQYD
+VR0OBBYEFIqEz/mAlaO8NtbupRjWl42b1x9gMAsGA1UdDwQEAwIChDAPBgNVHRM
+BAf8EBTADAQH/MAoGCCqGSM49BAMCA0kAMEYCIQC2cf43f3PPlCO6/dxv40ftIg
+xxToKHF72UzENv7+y4ygIhAIGtC/r6SGaFMaP7zD2EloBuIXTtyWu8Hwl+YGdXR
+Y93owKBoQKhAqIYH3FaZXN0eSBIYW5kcywgSW5jLhghAgSBoRkD5mxCaXR0ZXIg
+UGFwZXIGoQCBggBZAekwggHlMIIBi6ADAgECAhQL3EqgUXlQPljyddVSRnNHvK+
+1MzAKBggqhkjOPQQDAjBSMQswCQYDVQQGDAJVUzEaMBgGA1UECgwRWmVzdHkgSG
+FuZHMsIEluYy4xJzAlBgNVBAMMHlplc3R5IEhhbmRzLCBJbmMuIFRydXN0IEFuY
+2hvcjAeFw0yMjA1MTkxNTEzMDdaFw0zMjA1MTYxNTEzMDdaMFIxCzAJBgNVBAYM
+AlVTMRowGAYDVQQKDBFaZXN0eSBIYW5kcywgSW5jLjEnMCUGA1UEAwweWmVzdHk
+gSGFuZHMsIEluYy4gVHJ1c3QgQW5jaG9yMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQ
+cDQgAEl89tcNdqMEAMefHrq2rWFohxJIcQ1PTBIHra7wLRmGcTZ5HywrKfby3MP
+CElwvLS/e5PWQlLZ69DMy8N+1ykQKM/MD0wHQYDVR0OBBYEFPba0eUSi78N6elT
+Q7Nxxvf/5+JuMAsGA1UdDwQEAwIChDAPBgNVHRMBAf8EBTADAQH/MAoGCCqGSM4
+9BAMCA0gAMEUCIB2li+f6RCxs2EnvNWciSpIDwiUViWayGv1A8xks80eYAiEAmC
+ez4KGrolFKOZT6bvqf1sYQuJBfvtk/y1JQdUvoqlgEogDBGmHOSAABwRppVGeAW
+EAZ6C16XHpztE8GMFrs8O+M+HZChjI/bSuifXKR+S/1sM94n2/4i34u6O8mK0+h
+39fXr7CuLABiyY2zMiQ7PpmU
+</pre><a href="#appendix-A-2" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="acknowledgments">
+<section id="appendix-B">
+      <h2 id="name-acknowledgments">
+<a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
+      </h2>
+<p id="appendix-B-1">Thanks to Sabreen Kaur for spotting a bug in the examples.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="appendix-C">
+      <h2 id="name-authors-addresses">
+<a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
+      </h2>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Carl Wallace</span></div>
+<div dir="auto" class="left"><span class="org">Red Hound Software</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:carl@redhoundsoftware.com" class="email">carl@redhoundsoftware.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Russ Housley</span></div>
+<div dir="auto" class="left"><span class="org">Vigil Security, LLC</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:housley@vigilsec.com" class="email">housley@vigilsec.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Thomas Fossati</span></div>
+<div dir="auto" class="left"><span class="org">arm</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:Thomas.Fossati@arm.com" class="email">Thomas.Fossati@arm.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Yogesh Deshpande</span></div>
+<div dir="auto" class="left"><span class="org">arm</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:yogesh.deshpande@arm.com" class="email">yogesh.deshpande@arm.com</a>
+</div>
+</address>
+</section>
+</div>
+<script>const toc = document.getElementById("toc");
+toc.querySelector("h2").addEventListener("click", e => {
+  toc.classList.toggle("active");
+});
+toc.querySelector("nav").addEventListener("click", e => {
+  toc.classList.remove("active");
+});
+</script>
+</body>
+</html>
