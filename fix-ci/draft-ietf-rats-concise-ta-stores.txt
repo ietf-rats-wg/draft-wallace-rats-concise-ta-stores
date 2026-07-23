@@ -5,11 +5,11 @@
 Remote ATtestation ProcedureS                                 C. Wallace
 Internet-Draft                                        Red Hound Software
 Intended status: Standards Track                              R. Housley
-Expires: 16 June 2024                                Vigil Security, LLC
+Expires: 24 January 2027                             Vigil Security, LLC
                                                               T. Fossati
                                                             Y. Deshpande
                                                                      arm
-                                                        14 December 2023
+                                                            23 July 2026
 
 
                         Concise TA Stores (CoTS)
@@ -52,11 +52,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 16 June 2024.
+   This Internet-Draft will expire on 24 January 2027.
 
 Copyright Notice
 
-   Copyright (c) 2023 IETF Trust and the persons identified as the
+   Copyright (c) 2026 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -112,20 +112,18 @@ Table of Contents
 
    The Concise Reference Integrity Manifest (CoRIM)
    [I-D.draft-ietf-rats-corim] specification defines a binary encoding
-   for reference values and endorsmenents using the Concise Binary
-   Object Representation (CBOR) [RFC8949].  Amongst other information, a
-   CoRIM may include key material for use in verifying evidence from an
-   attesting environment (see Sections 3.1.4.4 and 3.1.4.5 of
-   [I-D.draft-ietf-rats-corim]).  The extension in this document aims to
-   enable public key material to be decoupled from reference values and
-   other kinds of endorsement values for several reasons, described
-   below.
+   for reference values using the Concise Binary Object Representation
+   (CBOR) [RFC8949].  Amongst other information, a CoRIM may include key
+   material for use in verifying evidence from an attesting environment
+   (see section 3.11 in [I-D.draft-ietf-rats-corim]).  The extension in
+   this document aims to enable public key material to be decoupled from
+   reference data for several reasons, described below.
 
    Trust anchor (TA) and certification authority (CA) public keys may be
-   less dynamic than the reference values that comprise much of a
+   less dynamic than the reference data that comprises much of a
    reference integrity manifest (RIM).  For example, TA and CA lifetimes
    are typically fairly long while software versions change frequently.
-   Conveying keys less frequently and indepedent from reference values
+   Conveying keys less frequently and indepedent from reference data
    enables a reduction in size of RIMs used to convey dynamic
    information and may result in a reduction in the size of aggregated
    data transferred to a verifier.  CoRIMs themselves are signed and
@@ -138,20 +136,19 @@ Table of Contents
    includes a trust anchor, leaving trust anchor management to other
    mechanisms.  Additionally, the CoRIM verification-map structure is
    tied to CoMIDs, leaving no simple means to convey verification
-   information for CoSWIDs [RFC9393].
+   information for CoSWIDs [I-D.draft-ietf-sacm-coswid].
 
    This document defines means to decouple TAs and CAs from reference
-   values and other kinds of endorsements and adds support for
-   constraining the use of trust anchors, chiefly by limiting the
-   environments to which a set of trust anchors is applicable.  This
-   constraints mechanism is similar to that in [fido-metadata] and
-   [fido-service] and should align with existing attestation
-   verification practices that tend to use per-vendor trust anchors.  TA
-   store instances may be further constrained using coarse-grained
-   purpose values or a set of finer-grained permitted or excluded
-   claims.  The trust anchor formats supported by this draft allow for
-   per-trust anchor constraints, if desired.  Conveyance of trust
-   anchors is the primary goal, CA certificates may optionally be
+   data and adds support for constraining the use of trust anchors,
+   chiefly by limiting the environments to which a set of trust anchors
+   is applicable.  This constraints mechanism is similar to that in
+   [fido-metadata] and [fido-service] and should align with existing
+   attestation verification practices that tend to use per-vendor trust
+   anchors.  TA store instances may be further constrained using coarse-
+   grained purpose values or a set of finer-grained permitted or
+   excluded claims.  The trust anchor formats supported by this draft
+   allow for per-trust anchor constraints, if desired.  Conveyance of
+   trust anchors is the primary goal, CA certificates may optionally be
    included for convenience.
 
 1.1.  Constraints
@@ -457,9 +454,10 @@ Table of Contents
 3.2.2.  The abbreviated-swid-tag-map Container
 
    The abbreviated-swid-tag-map allows for expression of fields from a
-   concise-swid-tag [RFC9393] with all fields except entity designated
-   as optional, compared to the concise-swid-tag definition that
-   requires tag-id, tag-version and software-name to be present.
+   concise-swid-tag [I-D.draft-ietf-sacm-coswid] with all fields except
+   entity designated as optional, compared to the concise-swid-tag
+   definition that requires tag-id, tag-version and software-name to be
+   present.
 
    abbreviated-swid-tag-map = {
      ? tag-id => text / bstr .size 16,
@@ -933,24 +931,31 @@ Table of Contents
    [I-D.draft-ietf-rats-corim]
               Birkholz, H., Fossati, T., Deshpande, Y., Smith, N., and
               W. Pan, "Concise Reference Integrity Manifest", Work in
-              Progress, Internet-Draft, draft-ietf-rats-corim-03, 23
-              October 2023, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-rats-corim-03>.
+              Progress, Internet-Draft, draft-ietf-rats-corim-11, 6 July
+              2026, <https://datatracker.ietf.org/doc/html/draft-ietf-
+              rats-corim-11>.
 
    [I-D.draft-ietf-rats-eat]
               Lundblade, L., Mandyam, G., O'Donoghue, J., and C.
               Wallace, "The Entity Attestation Token (EAT)", Work in
-              Progress, Internet-Draft, draft-ietf-rats-eat-22, 14
-              October 2023, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-rats-eat-22>.
+              Progress, Internet-Draft, draft-ietf-rats-eat-31, 6
+              September 2024, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-rats-eat-31>.
+
+   [I-D.draft-ietf-sacm-coswid]
+              Birkholz, H., Fitzgerald-McKay, J., Schmidt, C., and D.
+              Waltermire, "Concise Software Identification Tags", Work
+              in Progress, Internet-Draft, draft-ietf-sacm-coswid-24, 24
+              February 2023, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-sacm-coswid-24>.
 
    [IANA.cbor-tags]
               IANA, "Concise Binary Object Representation (CBOR) Tags",
-              <http://www.iana.org/assignments/cbor-tags>.
+              <https://www.iana.org/assignments/cbor-tags>.
 
    [IANA.language-subtag-registry]
               IANA, "Language Subtag Registry",
-              <http://www.iana.org/assignments/language-subtag-
+              <https://www.iana.org/assignments/language-subtag-
               registry>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
@@ -976,11 +981,6 @@ Table of Contents
               Representation (CBOR)", STD 94, RFC 8949,
               DOI 10.17487/RFC8949, December 2020,
               <https://www.rfc-editor.org/rfc/rfc8949>.
-
-   [RFC9393]  Birkholz, H., Fitzgerald-McKay, J., Schmidt, C., and D.
-              Waltermire, "Concise Software Identification Tags",
-              RFC 9393, DOI 10.17487/RFC9393, June 2023,
-              <https://www.rfc-editor.org/rfc/rfc9393>.
 
 8.2.  Informative References
 
