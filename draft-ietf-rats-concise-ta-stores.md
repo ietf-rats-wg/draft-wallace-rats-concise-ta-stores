@@ -24,8 +24,8 @@ author:
   email: housley@vigilsec.com
 - ins: T. Fossati
   name: Thomas Fossati
-  organization: arm
-  email: Thomas.Fossati@arm.com
+  organization: nvidia
+  email: tfossati@nvidia.com
 - ins: Y. Deshpande
   name: Yogesh Deshpande
   organization: arm
