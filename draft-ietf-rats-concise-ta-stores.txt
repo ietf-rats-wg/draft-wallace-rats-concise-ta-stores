@@ -5,11 +5,11 @@
 Remote ATtestation ProcedureS                                 C. Wallace
 Internet-Draft                                        Red Hound Software
 Intended status: Standards Track                              R. Housley
-Expires: 7 December 2023                             Vigil Security, LLC
+Expires: 28 January 2027                             Vigil Security, LLC
                                                               T. Fossati
                                                             Y. Deshpande
                                                                      arm
-                                                             5 June 2023
+                                                            27 July 2026
 
 
                         Concise TA Stores (CoTS)
@@ -52,11 +52,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 December 2023.
+   This Internet-Draft will expire on 28 January 2027.
 
 Copyright Notice
 
-   Copyright (c) 2023 IETF Trust and the persons identified as the
+   Copyright (c) 2026 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -931,16 +931,16 @@ Table of Contents
    [I-D.draft-ietf-rats-corim]
               Birkholz, H., Fossati, T., Deshpande, Y., Smith, N., and
               W. Pan, "Concise Reference Integrity Manifest", Work in
-              Progress, Internet-Draft, draft-ietf-rats-corim-01, 9
-              March 2023, <https://datatracker.ietf.org/doc/html/draft-
-              ietf-rats-corim-01>.
+              Progress, Internet-Draft, draft-ietf-rats-corim-11, 6 July
+              2026, <https://datatracker.ietf.org/doc/html/draft-ietf-
+              rats-corim-11>.
 
    [I-D.draft-ietf-rats-eat]
               Lundblade, L., Mandyam, G., O'Donoghue, J., and C.
               Wallace, "The Entity Attestation Token (EAT)", Work in
-              Progress, Internet-Draft, draft-ietf-rats-eat-19, 19
-              December 2022, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-rats-eat-19>.
+              Progress, Internet-Draft, draft-ietf-rats-eat-31, 6
+              September 2024, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-rats-eat-31>.
 
    [I-D.draft-ietf-sacm-coswid]
               Birkholz, H., Fitzgerald-McKay, J., Schmidt, C., and D.
