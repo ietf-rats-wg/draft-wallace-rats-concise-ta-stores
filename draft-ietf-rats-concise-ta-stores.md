@@ -24,7 +24,7 @@ author:
   email: housley@vigilsec.com
 - ins: T. Fossati
   name: Thomas Fossati
-  organization: nvidia
+  organization: NVIDIA
   email: tfossati@nvidia.com
 - ins: Y. Deshpande
   name: Yogesh Deshpande
