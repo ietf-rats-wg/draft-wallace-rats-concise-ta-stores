@@ -5,12 +5,12 @@
 Remote ATtestation ProcedureS                                 C. Wallace
 Internet-Draft                                        Red Hound Software
 Intended status: Standards Track                              R. Housley
-Expires: 28 January 2027                             Vigil Security, LLC
+Expires: 29 January 2027                             Vigil Security, LLC
                                                               T. Fossati
-                                                                  nvidia
+                                                                  NVIDIA
                                                             Y. Deshpande
                                                                      arm
-                                                            27 July 2026
+                                                            28 July 2026
 
 
                         Concise TA Stores (CoTS)
@@ -53,7 +53,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 28 January 2027.
+   This Internet-Draft will expire on 29 January 2027.
 
 Copyright Notice
 
@@ -1107,7 +1107,7 @@ Authors' Addresses
 
 
    Thomas Fossati
-   nvidia
+   NVIDIA
    Email: tfossati@nvidia.com
 
 
